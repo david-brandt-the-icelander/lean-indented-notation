@@ -1,0 +1,13 @@
+LIN 1
+steps
+- @
++ k 1
+- @
+deep
+ inline{} a @|b 1
+---
+@steps.0 This sentence is longer than twenty-four characters.
+@steps.2 |
+ This sentence is longer than twenty-four characters.
+ second line
+@deep.inline.a This sentence is longer than twenty-four characters.

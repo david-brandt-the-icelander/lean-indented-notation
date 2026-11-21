@@ -1,0 +1,49 @@
+{
+  "schemas": [
+    {
+      "hash": "sha256-0cao2J2xjwekmN8WdCyjZf2mdr44gIgw8Lc42LncE2A",
+      "id": "https://json-schema.org/draft/2020-12/meta/meta-data",
+      "title": "Meta-data vocabulary meta-schema"
+    },
+    {
+      "hash": "sha256-GNvQTexeyzKBidPglSpH44StGNk1FBL1sWQD2cKVZA0",
+      "id": "https://github.com/david-brandt-the-icelander/lean-indented-notation/registries",
+      "title": "LIN schema registries"
+    },
+    {
+      "hash": "sha256-TLdSXoAYb-3G_UCkjHTr-SG6ULKAmHpRxT-zcDgJWBw",
+      "id": "https://json-schema.org/draft/2020-12/meta/unevaluated",
+      "title": "Unevaluated applicator vocabulary meta-schema"
+    },
+    {
+      "hash": "sha256-giK6XQfewAlGPLo0Xo6ZhAAcU5LCa15lcEbwuF2MgrU",
+      "id": "https://json-schema.org/draft/2020-12/meta/format-annotation",
+      "title": "Format vocabulary meta-schema for annotation results"
+    },
+    {
+      "hash": "sha256-may8pJYoFfev-pvC-3PaZNeciE0ilp0gMjmzAtarwVs",
+      "id": "https://json-schema.org/draft/2020-12/meta/applicator",
+      "title": "Applicator vocabulary meta-schema"
+    },
+    {
+      "hash": "sha256-nC5JxRGEktjjr7tWjih33KajTKPKi99pPu4ONQco-DM",
+      "id": "https://json-schema.org/draft/2020-12/meta/validation",
+      "title": "Validation vocabulary meta-schema"
+    },
+    {
+      "hash": "sha256-rYIVMHECYTpbxewIO3m7cFkmdJ164g7AapUNzu_3tz4",
+      "id": "https://json-schema.org/draft/2020-12/meta/core",
+      "title": "Core vocabulary meta-schema"
+    },
+    {
+      "hash": "sha256-tLngpb9Ypy0MzWztLD0UK0VgfinH3QTSRRVVvFLYZYg",
+      "id": "https://json-schema.org/draft/2020-12/meta/content",
+      "title": "Content vocabulary meta-schema"
+    },
+    {
+      "hash": "sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars",
+      "id": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Core and Validation specifications meta-schema"
+    }
+  ]
+}

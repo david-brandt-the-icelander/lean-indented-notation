@@ -1,0 +1,37 @@
+{
+  "plugins": [
+    {
+      "id": "spell-check",
+      "summary": "This sentence is longer than twenty-four characters.",
+      "sources": [
+        {
+          "path": "This sentence is longer than twenty-four characters.",
+          "lines": 1
+        },
+        {
+          "path": "b",
+          "lines": 2
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "summary": "This sentence is longer than twenty-four characters."
+    },
+    {
+      "id": "has.dot",
+      "summary": "This sentence is longer than twenty-four characters."
+    },
+    {
+      "id": 1.5,
+      "summary": "This sentence is longer than twenty-four characters."
+    },
+    {
+      "id": true,
+      "summary": "This sentence is longer than twenty-four characters."
+    },
+    {
+      "summary": "This sentence is longer than twenty-four characters."
+    }
+  ]
+}

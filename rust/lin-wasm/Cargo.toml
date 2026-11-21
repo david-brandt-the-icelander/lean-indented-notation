@@ -1,0 +1,15 @@
+[package]
+name = "lin-wasm"
+description = "LIN (Lean Indented Notation) for web pages: the Rust library compiled to WebAssembly"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+lin-notation = { version = "1.0.0", path = "../lin" }
+wasm-bindgen = "=0.2.100"

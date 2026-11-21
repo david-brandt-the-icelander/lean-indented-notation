@@ -1,0 +1,1121 @@
+{
+  "about": "The Appendix B sample: permissively licensed JSON files from GitHub, listed by repository, path and git blob hash. The files are not redistributed; bench/fetch.py downloads them.",
+  "files": [
+    {
+      "file": "000.json",
+      "repo": "thorgate/django-project-template",
+      "branch": "master",
+      "path": "{{cookiecutter.repo_name}}/app/tsconfig.json",
+      "blob": "705a0f1ae13dde28f55f55c2239057ad1414df4b",
+      "license": "ISC",
+      "bytes": 634
+    },
+    {
+      "file": "001.json",
+      "repo": "OpenMobileAlliance/OMA-LWM2M-DevKit---DECOMMISSIONED",
+      "branch": "master",
+      "path": "clients/example-client.json",
+      "blob": "e830581358732ae4423e437e876337da4b17a581",
+      "license": "ISC",
+      "bytes": 3230
+    },
+    {
+      "file": "002.json",
+      "repo": "niyouqianma/workbuddy2api-hub",
+      "branch": "main",
+      "path": "pricing/pricing.json",
+      "blob": "d53adfd3911aca46468f742c0503937772a9f347",
+      "license": "MIT",
+      "bytes": 20869
+    },
+    {
+      "file": "003.json",
+      "repo": "valkey-io/valkey-search",
+      "branch": "main",
+      "path": "src/commands/ft.create.json",
+      "blob": "32ae5eb5c10116e95fbe70a46562661cd84b3915",
+      "license": "BSD-3-Clause",
+      "bytes": 14477
+    },
+    {
+      "file": "004.json",
+      "repo": "JarryShaw/PyPCAPKit",
+      "branch": "main",
+      "path": "tests/project/ci_timing_fixtures/jobs-37323913186.json",
+      "blob": "4e6420fc8403aaec9cf0e2bd92d7e500a521daa0",
+      "license": "BSD-3-Clause",
+      "bytes": 3008
+    },
+    {
+      "file": "005.json",
+      "repo": "leetal/ios-cmake",
+      "branch": "master",
+      "path": "example/example-app/example-app/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "blob": "36d2c80d8893178d7e1f2964085b273959bfdc28",
+      "license": "BSD-3-Clause",
+      "bytes": 1077
+    },
+    {
+      "file": "006.json",
+      "repo": "Kkevsterrr/geneva",
+      "branch": "master",
+      "path": "workers/example/worker.json",
+      "blob": "75af7173611a0b4188cf3cc1026d66f36299e319",
+      "license": "BSD-3-Clause",
+      "bytes": 364
+    },
+    {
+      "file": "007.json",
+      "repo": "mskelton/yarn-plugin-outdated",
+      "branch": "main",
+      "path": ".oxfmtrc.json",
+      "blob": "abfb45ecda3d2b4ddb881bcbf1df4eb74e79ac2e",
+      "license": "ISC",
+      "bytes": 371
+    },
+    {
+      "file": "008.json",
+      "repo": "XRPLF/xrpl4j",
+      "branch": "main",
+      "path": "xrpl4j-core/src/main/resources/definitions.json",
+      "blob": "f7ec2bab56dd67ff81cbf4773a239f4b06526bc9",
+      "license": "ISC",
+      "bytes": 143193
+    },
+    {
+      "file": "009.json",
+      "repo": "awslabs/aws-config-rules",
+      "branch": "master",
+      "path": "python/IAM_IP_RESTRICTION/parameters.json",
+      "blob": "760142f9ab09fc5000e222bf7c3c6155d7301b89",
+      "license": "CC0-1.0",
+      "bytes": 323
+    },
+    {
+      "file": "010.json",
+      "repo": "hgaiser/moonshine",
+      "branch": "main",
+      "path": ".vscode/launch.json",
+      "blob": "7f8c147e600eedd54a89bd15e37252a3f24e14c0",
+      "license": "BSD-2-Clause",
+      "bytes": 518
+    },
+    {
+      "file": "011.json",
+      "repo": "LemonOSProject/LemonOS",
+      "branch": "master",
+      "path": "Base/lemon/resources/themes/default.json",
+      "blob": "57fe4fbb01b87602cf473f7e12d9711d6e66d134",
+      "license": "BSD-2-Clause",
+      "bytes": 658
+    },
+    {
+      "file": "012.json",
+      "repo": "beto-rodriguez/Manuela",
+      "branch": "master",
+      "path": "templates/content/HybridMauiTemplate/.template.config/template.json",
+      "blob": "95f3663a38850627aabf8804055f655ea4eed20f",
+      "license": "MIT",
+      "bytes": 458
+    },
+    {
+      "file": "013.json",
+      "repo": "sarvjeets/lakshmi",
+      "branch": "develop",
+      "path": "tests/data/profile.json",
+      "blob": "7b150e7f8f1a3a80c0e27195da4cdd54a4078a1f",
+      "license": "MIT",
+      "bytes": 3260
+    },
+    {
+      "file": "014.json",
+      "repo": "magnusoverli/opencode",
+      "branch": "main",
+      "path": "ha_opencode/rootfs/opt/openchamber/security-overrides.json",
+      "blob": "16e46db542cf64477eb15861d9e9c4ddf1f39fea",
+      "license": "Unlicense",
+      "bytes": 307
+    },
+    {
+      "file": "015.json",
+      "repo": "davidmerfield/randomColor",
+      "branch": "master",
+      "path": "package.json",
+      "blob": "a09cc4553f1d85c8ffbe4dfbbc09cb244dafa39d",
+      "license": "CC0-1.0",
+      "bytes": 450
+    },
+    {
+      "file": "016.json",
+      "repo": "lpongetti/flutter_map_marker_cluster",
+      "branch": "master",
+      "path": "example/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+      "blob": "0bedcf2fd46788ae3a01a423467513ff59b5c120",
+      "license": "BSD-3-Clause",
+      "bytes": 391
+    },
+    {
+      "file": "017.json",
+      "repo": "dbt-labs/jaffle_shop_duckdb",
+      "branch": "duckdb",
+      "path": ".devcontainer.json",
+      "blob": "d8fa6c587d00f9ad365da8deac2d7a3e5bf4a45e",
+      "license": "Apache-2.0",
+      "bytes": 2961
+    },
+    {
+      "file": "018.json",
+      "repo": "aws-actions/aws-codebuild-run-build",
+      "branch": "main",
+      "path": ".eslintrc.json",
+      "blob": "316b04467bd6a727fd98d473856bfb7f3fd97d4a",
+      "license": "Apache-2.0",
+      "bytes": 324
+    },
+    {
+      "file": "019.json",
+      "repo": "adobe/lagrange",
+      "branch": "main",
+      "path": "cmake/recipes/external/MKL.json",
+      "blob": "794897fea3eeab1e67e48ffbcf0bb30858c938ba",
+      "license": "Apache-2.0",
+      "bytes": 1525
+    },
+    {
+      "file": "020.json",
+      "repo": "hpc-maths/samurai",
+      "branch": "main",
+      "path": "docs/.impeccable/design.json",
+      "blob": "c635073d8dd59f302bf9972ec96f0c06fc06840b",
+      "license": "BSD-3-Clause",
+      "bytes": 29975
+    },
+    {
+      "file": "021.json",
+      "repo": "zigcc/awesome-zig",
+      "branch": "main",
+      "path": "package.json",
+      "blob": "2e24f882b2c495d62b8ac8c81df4fa72689b1763",
+      "license": "CC0-1.0",
+      "bytes": 382
+    },
+    {
+      "file": "022.json",
+      "repo": "webpro-nl/unbash",
+      "branch": "main",
+      "path": ".oxfmtrc.json",
+      "blob": "0f4b1011bdafb2e816b7486a61330c3f65581f20",
+      "license": "ISC",
+      "bytes": 230
+    },
+    {
+      "file": "023.json",
+      "repo": "webpro-nl/unbash",
+      "branch": "main",
+      "path": "package.json",
+      "blob": "651b868475bac1741bd8a87e7f506e84d2e2897f",
+      "license": "ISC",
+      "bytes": 2063
+    },
+    {
+      "file": "024.json",
+      "repo": "PlakarKorp/go-cdc-chunkers",
+      "branch": "main",
+      "path": "tests/testdata/golden.json",
+      "blob": "f1a7855e5a0ab74d35bfcbb7cb1e95ecfa705808",
+      "license": "ISC",
+      "bytes": 41518
+    },
+    {
+      "file": "025.json",
+      "repo": "PlakarKorp/go-cdc-chunkers",
+      "branch": "main",
+      "path": "tests/vectors/vectors.json",
+      "blob": "98e916a33ec07571a6fb8e63c390443155b9fed8",
+      "license": "ISC",
+      "bytes": 22466
+    },
+    {
+      "file": "026.json",
+      "repo": "ImVexed/muon",
+      "branch": "master",
+      "path": "examples/create-react-app/public/public/manifest.json",
+      "blob": "080d6c77ac21bb2ef88a6992b2b73ad93daaca92",
+      "license": "MIT",
+      "bytes": 492
+    },
+    {
+      "file": "027.json",
+      "repo": "ImVexed/muon",
+      "branch": "master",
+      "path": "examples/create-react-app/public/package.json",
+      "blob": "3a2965071f8bf91c7fdf59b3275f6fea32d2e88e",
+      "license": "MIT",
+      "bytes": 809
+    },
+    {
+      "file": "028.json",
+      "repo": "richgel999/miniz",
+      "branch": "master",
+      "path": "CMakePresets.json",
+      "blob": "7fc8d5cd7140cb3041d287698a19b79a702d50ae",
+      "license": "MIT",
+      "bytes": 1696
+    },
+    {
+      "file": "029.json",
+      "repo": "ErlichLiu/DeepClaude",
+      "branch": "main",
+      "path": "app/model_manager/model_configs.json",
+      "blob": "7fdbf5854f3ae19a1f2201d8058bedb3db9c2d0c",
+      "license": "MIT",
+      "bytes": 3983
+    },
+    {
+      "file": "030.json",
+      "repo": "dankeboy36/esp-exception-decoder",
+      "branch": "main",
+      "path": ".vscode/settings.json",
+      "blob": "8315cda9da70a83afc1cca4f72423493fc7da105",
+      "license": "MIT",
+      "bytes": 628
+    },
+    {
+      "file": "031.json",
+      "repo": "dankeboy36/esp-exception-decoder",
+      "branch": "main",
+      "path": "package.json",
+      "blob": "28a92fb15464e08649f12ffccc52d31becdde8bf",
+      "license": "MIT",
+      "bytes": 15351
+    },
+    {
+      "file": "032.json",
+      "repo": "firtoz/GPT-Shell",
+      "branch": "main",
+      "path": ".changeset/config.json",
+      "blob": "7fcf97338c6fd116a6ef7e11e00e9d3aa1cf1ecf",
+      "license": "MIT",
+      "bytes": 275
+    },
+    {
+      "file": "033.json",
+      "repo": "firtoz/GPT-Shell",
+      "branch": "main",
+      "path": "package.json",
+      "blob": "7f57c49e67a924d1645c30d3863d749e597b8eca",
+      "license": "MIT",
+      "bytes": 1392
+    },
+    {
+      "file": "034.json",
+      "repo": "Anjaxs/WebStack-vue",
+      "branch": "master",
+      "path": "src/assets/data.json",
+      "blob": "2604fe65ebff815d3ec8838de2eaa8cef36035be",
+      "license": "MIT",
+      "bytes": 72244
+    },
+    {
+      "file": "035.json",
+      "repo": "Anjaxs/WebStack-vue",
+      "branch": "master",
+      "path": "package.json",
+      "blob": "45ed63e7d9f1a73bc01e8ed0caebd54bff7f0d8c",
+      "license": "MIT",
+      "bytes": 993
+    },
+    {
+      "file": "036.json",
+      "repo": "outflanknl/RedELK",
+      "branch": "master",
+      "path": "elkserver/docker/redelk-base/redelkinstalldata/templates/diff/redelk_kibana_index-pattern_implantsdb.json",
+      "blob": "9cce94909fe592429eef3b1c1a7860259fdbbd37",
+      "license": "BSD-3-Clause",
+      "bytes": 64519
+    },
+    {
+      "file": "037.json",
+      "repo": "outflanknl/RedELK",
+      "branch": "master",
+      "path": "elkserver/docker/redelk-base/redelkinstalldata/templates/redelk_kibana_settings.json",
+      "blob": "5b96d20551484a6af6b014654d99577face6c69f",
+      "license": "BSD-3-Clause",
+      "bytes": 535
+    },
+    {
+      "file": "038.json",
+      "repo": "meta-pytorch/torchrec",
+      "branch": "main",
+      "path": "torchrec/metrics/tests/metric_fqn_golden_snapshot.json",
+      "blob": "b20825a6675bd0df3a4b6f081d2b98f2eef92421",
+      "license": "BSD-3-Clause",
+      "bytes": 18842
+    },
+    {
+      "file": "039.json",
+      "repo": "CrimsonForge-io/king-phisher",
+      "branch": "master",
+      "path": "data/client/king_phisher/client_config.json",
+      "blob": "b8a4e8caf7293627c776ce7d1de5cef8d4f92123",
+      "license": "BSD-3-Clause",
+      "bytes": 2307
+    },
+    {
+      "file": "040.json",
+      "repo": "CrimsonForge-io/king-phisher",
+      "branch": "master",
+      "path": "data/client/king_phisher/completion/jinja.json",
+      "blob": "1be85750d716d909a88c98240684e9ad098f1bf6",
+      "license": "BSD-3-Clause",
+      "bytes": 4454
+    },
+    {
+      "file": "041.json",
+      "repo": "swagger-api/swagger-codegen-generators",
+      "branch": "master",
+      "path": "src/test/resources/3_0_0/requestBodyRefTest.json",
+      "blob": "0235e4e9e335f60336ef8cbd9ce0c59f4dcfa8e7",
+      "license": "Apache-2.0",
+      "bytes": 764
+    },
+    {
+      "file": "042.json",
+      "repo": "swagger-api/swagger-codegen-generators",
+      "branch": "master",
+      "path": "src/test/resources/3_0_0/datePropertyTest.json",
+      "blob": "ec3e63b0253de3df8c99ab849707e568fdda5fda",
+      "license": "Apache-2.0",
+      "bytes": 1558
+    },
+    {
+      "file": "043.json",
+      "repo": "MieMieeeee/ComfyUI-Mie-Package-Launcher",
+      "branch": "main",
+      "path": "launcher/config.json",
+      "blob": "a33b1e30778110d5b2ec40b29327ac970ec29595",
+      "license": "Apache-2.0",
+      "bytes": 3951
+    },
+    {
+      "file": "044.json",
+      "repo": "MieMieeeee/ComfyUI-Mie-Package-Launcher",
+      "branch": "main",
+      "path": "config.json",
+      "blob": "93d7ddb8a043b0b24d8075a483acc4b8a4f122ef",
+      "license": "Apache-2.0",
+      "bytes": 1228
+    },
+    {
+      "file": "045.json",
+      "repo": "step-security/wait-for-secrets",
+      "branch": "main",
+      "path": "package.json",
+      "blob": "f8ea177cee739175d7de31dbaad9e50146de65ea",
+      "license": "Apache-2.0",
+      "bytes": 1317
+    },
+    {
+      "file": "046.json",
+      "repo": "step-security/wait-for-secrets",
+      "branch": "main",
+      "path": "tsconfig.json",
+      "blob": "d9d3cee5170e9558f61346c27000f955fbdf8345",
+      "license": "Apache-2.0",
+      "bytes": 299
+    },
+    {
+      "file": "047.json",
+      "repo": "souporserious/react-media-player",
+      "branch": "master",
+      "path": "package.json",
+      "blob": "bc44962a646594f98a89420f846b17eb19039f34",
+      "license": "ISC",
+      "bytes": 2128
+    },
+    {
+      "file": "048.json",
+      "repo": "BenoitZugmeyer/eslint-plugin-html",
+      "branch": "main",
+      "path": "package.json",
+      "blob": "74d71697aab07a561b681022cef5bcd0092497a6",
+      "license": "ISC",
+      "bytes": 1078
+    },
+    {
+      "file": "049.json",
+      "repo": "lloyd/node-compute-cluster",
+      "branch": "master",
+      "path": "package.json",
+      "blob": "6f84e98c6ce10264588171e92521a564dfcc180c",
+      "license": "ISC",
+      "bytes": 676
+    },
+    {
+      "file": "050.json",
+      "repo": "django-commons/django-cookie-consent",
+      "branch": "main",
+      "path": "cookie_consent/fixtures/common_cookies.json",
+      "blob": "aaff741bdc1311a750f0f5d3f2217c40c949562c",
+      "license": "BSD-2-Clause",
+      "bytes": 2449
+    },
+    {
+      "file": "051.json",
+      "repo": "django-commons/django-cookie-consent",
+      "branch": "main",
+      "path": "js/package.json",
+      "blob": "217ec9c99f01e377dc5ef029f4c7ad1a77ca88f7",
+      "license": "BSD-2-Clause",
+      "bytes": 982
+    },
+    {
+      "file": "052.json",
+      "repo": "riophae/vue-treeselect",
+      "branch": "master",
+      "path": "package.json",
+      "blob": "d9a9cba79fb88a19fe8c2670e76e05c0b3c04132",
+      "license": "MIT",
+      "bytes": 4721
+    },
+    {
+      "file": "053.json",
+      "repo": "bitwalker/distillery",
+      "branch": "master",
+      "path": "test/fixtures/umbrella_app/apps/web/assets/package.json",
+      "blob": "038fb2796df6da4a46d75c1eab43c1758f00c6be",
+      "license": "MIT",
+      "bytes": 414
+    },
+    {
+      "file": "054.json",
+      "repo": "vuejs/devtools",
+      "branch": "main",
+      "path": "packages/client/package.json",
+      "blob": "38b31a0ef289ea43ccbde3ed7acf8e9c62605443",
+      "license": "MIT",
+      "bytes": 1161
+    },
+    {
+      "file": "055.json",
+      "repo": "vuejs/devtools",
+      "branch": "main",
+      "path": "packages/chrome/package.json",
+      "blob": "efdeb053a25791e5f58ee892175ba5d45d306114",
+      "license": "MIT",
+      "bytes": 1019
+    },
+    {
+      "file": "056.json",
+      "repo": "holzschu/a-shell",
+      "branch": "master",
+      "path": "Resources/Themes/catppuccin-mocha.json",
+      "blob": "318d84fa56896786eaf4db23da9f2677005ef07c",
+      "license": "BSD-3-Clause",
+      "bytes": 747
+    },
+    {
+      "file": "057.json",
+      "repo": "holzschu/a-shell",
+      "branch": "master",
+      "path": "Resources/Themes/catppuccin-macchiato.json",
+      "blob": "3ad045f0022978066c663404477a4e09498c9427",
+      "license": "BSD-3-Clause",
+      "bytes": 755
+    },
+    {
+      "file": "058.json",
+      "repo": "DLLXW/baby-llama2-chinese",
+      "branch": "main",
+      "path": "chatglm_tokenizer/tokenizer_config.json",
+      "blob": "79b212c00ecdde03c51bb791f7fdfc25f4176ff3",
+      "license": "MIT",
+      "bytes": 244
+    },
+    {
+      "file": "059.json",
+      "repo": "DarkaOnLine/L5-Swagger",
+      "branch": "master",
+      "path": "tests/Unit/Fixtures/api-docs.json",
+      "blob": "ea9620f7afaab2658e83f91922939e6179de3316",
+      "license": "MIT",
+      "bytes": 4969
+    },
+    {
+      "file": "060.json",
+      "repo": "DarkaOnLine/L5-Swagger",
+      "branch": "master",
+      "path": "composer.json",
+      "blob": "d01a07efb6ea5359624f866ae927d831f5e74835",
+      "license": "MIT",
+      "bytes": 1442
+    },
+    {
+      "file": "061.json",
+      "repo": "microsoft/CCF",
+      "branch": "main",
+      "path": "scripts/source-dependencies.json",
+      "blob": "ef3f0656bb06be62192850e68bf1993f4440e888",
+      "license": "Apache-2.0",
+      "bytes": 2115
+    },
+    {
+      "file": "062.json",
+      "repo": "microsoft/CCF",
+      "branch": "main",
+      "path": "samples/config/recover_config.json",
+      "blob": "ebc4964fa4fa11ae12012e4d070f3255ef0ea20c",
+      "license": "Apache-2.0",
+      "bytes": 1755
+    },
+    {
+      "file": "063.json",
+      "repo": "albertomosconi/foss-apps",
+      "branch": "main",
+      "path": "apps/programming.json",
+      "blob": "ddd8cc7640f21e9c97788e8a28e846cb0ce78ed4",
+      "license": "CC0-1.0",
+      "bytes": 642
+    },
+    {
+      "file": "064.json",
+      "repo": "albertomosconi/foss-apps",
+      "branch": "main",
+      "path": "apps/utilities.json",
+      "blob": "08201bea73e4daba7dc571bf7c2098b241bfe8d5",
+      "license": "CC0-1.0",
+      "bytes": 4140
+    },
+    {
+      "file": "065.json",
+      "repo": "reframe-hpc/reframe",
+      "branch": "develop",
+      "path": "reframe/schemas/runreport.json",
+      "blob": "7be23ade2207f2e548de16e5c561fdb5f6bc6e0c",
+      "license": "BSD-3-Clause",
+      "bytes": 8770
+    },
+    {
+      "file": "066.json",
+      "repo": "reframe-hpc/reframe",
+      "branch": "develop",
+      "path": "reframe/schemas/config.json",
+      "blob": "119b3904ed8f9e037a5dc74e17cb90a7f55c8a5b",
+      "license": "BSD-3-Clause",
+      "bytes": 33309
+    },
+    {
+      "file": "067.json",
+      "repo": "JakubOnderka/PHP-Console-Color",
+      "branch": "master",
+      "path": "composer.json",
+      "blob": "0237703efc55fc5918f653511860353ba64ec22f",
+      "license": "BSD-2-Clause",
+      "bytes": 654
+    },
+    {
+      "file": "068.json",
+      "repo": "stephenmcd/mezzanine",
+      "branch": "master",
+      "path": "mezzanine/pages/fixtures/mezzanine_required.json",
+      "blob": "b7ef45535c018ae1161bc5221777783e6da4d9af",
+      "license": "BSD-2-Clause",
+      "bytes": 533
+    },
+    {
+      "file": "069.json",
+      "repo": "stephenmcd/mezzanine",
+      "branch": "master",
+      "path": "mezzanine/pages/fixtures/mezzanine_optional.json",
+      "blob": "3439acdd9661fc32730276001001cb978538629a",
+      "license": "BSD-2-Clause",
+      "bytes": 3033
+    },
+    {
+      "file": "070.json",
+      "repo": "gokrazy/gokrazy",
+      "branch": "main",
+      "path": "website/themes/hugo-theme-relearn/docs/content/shortcodes/openapi/petstore.json",
+      "blob": "63b853e13052081d4da8252c117cb57046579a54",
+      "license": "BSD-3-Clause",
+      "bytes": 44968
+    },
+    {
+      "file": "071.json",
+      "repo": "gokrazy/gokrazy",
+      "branch": "main",
+      "path": "website/themes/hugo-theme-relearn/assets/js/mathjax/sre/mathmaps/base.json",
+      "blob": "c7f35e2af06293640750284b138de592ab161a7f",
+      "license": "BSD-3-Clause",
+      "bytes": 114730
+    },
+    {
+      "file": "072.json",
+      "repo": "arpanghosh8453/garmin-grafana",
+      "branch": "main",
+      "path": "Grafana_Dashboard/Garmin-Strength-Training-Dashboard.json",
+      "blob": "a564dc3f464562049304cfc2e103c7cf86b450c3",
+      "license": "BSD-3-Clause",
+      "bytes": 55966
+    },
+    {
+      "file": "073.json",
+      "repo": "mint-lang/mint",
+      "branch": "master",
+      "path": "runtime/package.json",
+      "blob": "5a219dd2c8ee64c71b1e7ef1f6b0b5d788aa929e",
+      "license": "BSD-3-Clause",
+      "bytes": 451
+    },
+    {
+      "file": "074.json",
+      "repo": "danielsaidi/DeckKit",
+      "branch": "main",
+      "path": "Demo/Demo/Resources/AppIcon.icon/icon.json",
+      "blob": "59e0fa5dca01a3e3aa516c4e075cae22498e7c8c",
+      "license": "MIT",
+      "bytes": 1029
+    },
+    {
+      "file": "075.json",
+      "repo": "o-o-overflow/dcf-game-infrastructure-public",
+      "branch": "main",
+      "path": "ooogame/database/frontend/public/manifest.json",
+      "blob": "ef19ec243e739479802a5553d0b38a18ed845307",
+      "license": "BSD-2-Clause",
+      "bytes": 317
+    },
+    {
+      "file": "076.json",
+      "repo": "o-o-overflow/dcf-game-infrastructure-public",
+      "branch": "main",
+      "path": "ooogame/team_interface/frontend/public/manifest.json",
+      "blob": "ef19ec243e739479802a5553d0b38a18ed845307",
+      "license": "BSD-2-Clause",
+      "bytes": 317
+    },
+    {
+      "file": "077.json",
+      "repo": "darkain/php-tracking-urls",
+      "branch": "main",
+      "path": "composer.json",
+      "blob": "0c738aae5ab7184b380d0299e92c9f2663ebaa14",
+      "license": "BSD-2-Clause",
+      "bytes": 577
+    },
+    {
+      "file": "078.json",
+      "repo": "nginx/nginx-asg-sync",
+      "branch": "main",
+      "path": "renovate.json",
+      "blob": "c9d7c6ec754da4f9aa3f6dad8055834ea1263237",
+      "license": "BSD-2-Clause",
+      "bytes": 277
+    },
+    {
+      "file": "079.json",
+      "repo": "InitialDet/AutoHook",
+      "branch": "main",
+      "path": "AutoHook/AutoHook.json",
+      "blob": "f067468b8f4345da3723e6a20d9f4e5db6c9925f",
+      "license": "BSD-3-Clause",
+      "bytes": 509
+    },
+    {
+      "file": "080.json",
+      "repo": "InitialDet/AutoHook",
+      "branch": "main",
+      "path": "AutoHook/Data/FishData/bitetimers.json",
+      "blob": "73102b6a64e50a4747890537bc92a8b552dec3bf",
+      "license": "BSD-3-Clause",
+      "bytes": 278902
+    },
+    {
+      "file": "081.json",
+      "repo": "jupyterlab-contrib/jupyterlab-spreadsheet-editor",
+      "branch": "main",
+      "path": "install.json",
+      "blob": "cc2c18f090d4c8c66e9ac30ec5128e82c70f048a",
+      "license": "BSD-3-Clause",
+      "bytes": 219
+    },
+    {
+      "file": "082.json",
+      "repo": "jupyterlab-contrib/jupyterlab-spreadsheet-editor",
+      "branch": "main",
+      "path": "package.json",
+      "blob": "3be6a5b5abcc875db7ae16eec1b24cbd0ffd8dfe",
+      "license": "BSD-3-Clause",
+      "bytes": 7335
+    },
+    {
+      "file": "083.json",
+      "repo": "deldersveld/PowerBI-ThemeTemplates",
+      "branch": "master",
+      "path": "LineStackedColumnCombo.json",
+      "blob": "571fb28468ab86b508197ae6cc07e1fa2ddb6643",
+      "license": "Unlicense",
+      "bytes": 3015
+    },
+    {
+      "file": "084.json",
+      "repo": "deldersveld/PowerBI-ThemeTemplates",
+      "branch": "master",
+      "path": "GlobalLevelTemplate.json",
+      "blob": "980807ace78e4652347657e876107c9a02f7c37c",
+      "license": "Unlicense",
+      "bytes": 4599
+    },
+    {
+      "file": "085.json",
+      "repo": "leptos-rs/start-axum-0.6",
+      "branch": "main",
+      "path": "end2end/package.json",
+      "blob": "a80ac597373427f656d5f9ff363278d6ceb7dfe1",
+      "license": "Unlicense",
+      "bytes": 282
+    },
+    {
+      "file": "086.json",
+      "repo": "perplexityai/wandr",
+      "branch": "main",
+      "path": "datasets/wandr/new-grad-rn-residencies/tests/manifest.json",
+      "blob": "43b935bff2b7c1c9ba6e89814cce122350f34905",
+      "license": "Apache-2.0",
+      "bytes": 226
+    },
+    {
+      "file": "087.json",
+      "repo": "perplexityai/wandr",
+      "branch": "main",
+      "path": "datasets/wandr/sony-label-artist-affiliations/tests/manifest.json",
+      "blob": "b4e8c81ca58f3639f88bd63e59284de722fa6ab7",
+      "license": "Apache-2.0",
+      "bytes": 212
+    },
+    {
+      "file": "088.json",
+      "repo": "lmco/dart",
+      "branch": "master",
+      "path": "missions/fixtures/common_bas.json",
+      "blob": "59d88d33fa6da99730a75738aec1f56b07dea02e",
+      "license": "Apache-2.0",
+      "bytes": 212
+    },
+    {
+      "file": "089.json",
+      "repo": "lmco/dart",
+      "branch": "master",
+      "path": "missions/fixtures/common_classifications.json",
+      "blob": "1e02842a80a8096fd0682f302f48760a640ecbb3",
+      "license": "Apache-2.0",
+      "bytes": 1896
+    },
+    {
+      "file": "090.json",
+      "repo": "71/stadiacontroller",
+      "branch": "master",
+      "path": ".vscode/launch.json",
+      "blob": "d28130e6f5d99647b762da40f4ca8ab4771a1924",
+      "license": "ISC",
+      "bytes": 239
+    },
+    {
+      "file": "091.json",
+      "repo": "fasttime/JScrewIt",
+      "branch": "main",
+      "path": "packages/~result-format/package.json",
+      "blob": "869042ecc6bff07d013124d0be6eb1acffbd0a53",
+      "license": "ISC",
+      "bytes": 1324
+    },
+    {
+      "file": "092.json",
+      "repo": "fasttime/JScrewIt",
+      "branch": "main",
+      "path": "package.json",
+      "blob": "eb3a1018514fb8d20e0266c7346459d487b756a6",
+      "license": "ISC",
+      "bytes": 2398
+    },
+    {
+      "file": "093.json",
+      "repo": "ciromattia/kcc",
+      "branch": "master",
+      "path": "kcc.json",
+      "blob": "456786ad8d9a02216b42278d407727ebe81dbf6f",
+      "license": "ISC",
+      "bytes": 311
+    },
+    {
+      "file": "094.json",
+      "repo": "Zulko/eagle.js",
+      "branch": "master",
+      "path": "package.json",
+      "blob": "31a38234fb5998e9f75132cb8957b9a4e5acecb6",
+      "license": "ISC",
+      "bytes": 2098
+    },
+    {
+      "file": "095.json",
+      "repo": "dominictobias/react-image-crop",
+      "branch": "master",
+      "path": "tsconfig.json",
+      "blob": "5d154ee110af044be9d1c4fd1dac0807f5eace6f",
+      "license": "ISC",
+      "bytes": 586
+    },
+    {
+      "file": "096.json",
+      "repo": "dominictobias/react-image-crop",
+      "branch": "master",
+      "path": "package.json",
+      "blob": "e6df2475b081b58468c9b3a502337d1c855ecd35",
+      "license": "ISC",
+      "bytes": 1769
+    },
+    {
+      "file": "097.json",
+      "repo": "manosim/django-rest-framework-docs",
+      "branch": "master",
+      "path": "rest_framework_docs/static/package.json",
+      "blob": "8f56ea015b7affa33911d2ad7ff750d146a1b074",
+      "license": "BSD-2-Clause",
+      "bytes": 2216
+    },
+    {
+      "file": "098.json",
+      "repo": "lefticus/cpp_weekly",
+      "branch": "master",
+      "path": "PMR/data/apache_builds.json",
+      "blob": "c4a4cf820e3cfec7ffc43d2245497f59348f1a15",
+      "license": "Unlicense",
+      "bytes": 127275
+    },
+    {
+      "file": "099.json",
+      "repo": "lefticus/cpp_weekly",
+      "branch": "master",
+      "path": "PMR/data/numbers.json",
+      "blob": "af0857f158f45256e6396ab72425c3c7b2687f71",
+      "license": "Unlicense",
+      "bytes": 150124
+    },
+    {
+      "file": "100.json",
+      "repo": "ngx-formly/ngx-formly",
+      "branch": "main",
+      "path": "src/ui/kendo/package.json",
+      "blob": "dcc538c3285a99e7a45e3adea03b8a6d0755f07d",
+      "license": "MIT",
+      "bytes": 366
+    },
+    {
+      "file": "101.json",
+      "repo": "ngx-formly/ngx-formly",
+      "branch": "main",
+      "path": "demo/src/app/app.menu.json",
+      "blob": "87b966e4df272a90b47ae9d5121d5bab0f3b3b05",
+      "license": "MIT",
+      "bytes": 7494
+    },
+    {
+      "file": "102.json",
+      "repo": "codigoencasa/builderbot",
+      "branch": "builderbot",
+      "path": "packages/bot/tsconfig.json",
+      "blob": "ae96598ab159f383d4543de74772ff6888b3d1a7",
+      "license": "MIT",
+      "bytes": 517
+    },
+    {
+      "file": "103.json",
+      "repo": "codigoencasa/builderbot",
+      "branch": "builderbot",
+      "path": "packages/provider-tiktok/tsconfig.json",
+      "blob": "705da99f1fce7be5c174766856eacee194c2de79",
+      "license": "MIT",
+      "bytes": 552
+    },
+    {
+      "file": "104.json",
+      "repo": "rcaferati/react-awesome-slider",
+      "branch": "master",
+      "path": "package.json",
+      "blob": "03f123675fd2d8ccececdc1e92111305654c4e88",
+      "license": "MIT",
+      "bytes": 5630
+    },
+    {
+      "file": "105.json",
+      "repo": "rcaferati/react-awesome-slider",
+      "branch": "master",
+      "path": ".eslintrc.json",
+      "blob": "200070a9348ffa7bee6b1536eb9523d8b95121ae",
+      "license": "MIT",
+      "bytes": 1860
+    },
+    {
+      "file": "106.json",
+      "repo": "pawamoy/website",
+      "branch": "main",
+      "path": "sponsors-logo.json",
+      "blob": "6af267e85fe7ed90332737f46a6af34cda795495",
+      "license": "ISC",
+      "bytes": 964
+    },
+    {
+      "file": "107.json",
+      "repo": "thomasballinger/observable-jupyter",
+      "branch": "main",
+      "path": "js/package.json",
+      "blob": "9061548d3026851b736eea24c24ecf6327aa99a1",
+      "license": "ISC",
+      "bytes": 653
+    },
+    {
+      "file": "108.json",
+      "repo": "tlaplus/tlapm",
+      "branch": "main",
+      "path": ".vscode/cspell.json",
+      "blob": "a4ba0950c2514be27d6db68ecc1b89f8eb204bf8",
+      "license": "BSD-2-Clause",
+      "bytes": 681
+    },
+    {
+      "file": "109.json",
+      "repo": "tlaplus/tlapm",
+      "branch": "main",
+      "path": ".vscode/launch.json",
+      "blob": "392aab21c107439d2c1723f5a5aa6fc72d6e57cb",
+      "license": "BSD-2-Clause",
+      "bytes": 418
+    },
+    {
+      "file": "110.json",
+      "repo": "sumitchatterjee13/nuke-nodes-comfyui",
+      "branch": "main",
+      "path": "tools/interface_manifest.json",
+      "blob": "e75ea8cbfa3be3e7cb5f3a4d1593332f3a7e1fd9",
+      "license": "MIT",
+      "bytes": 29711
+    },
+    {
+      "file": "111.json",
+      "repo": "michelegera/tailwindcss-open-template",
+      "branch": "main",
+      "path": "package.json",
+      "blob": "f533754623d7453138360d571bd461c1732caae9",
+      "license": "MIT",
+      "bytes": 601
+    },
+    {
+      "file": "112.json",
+      "repo": "joseluisq/gimage",
+      "branch": "master",
+      "path": "composer.json",
+      "blob": "58edaebdc2ae53e9bb8c7048e3b1acfbb83c3eba",
+      "license": "MIT",
+      "bytes": 1404
+    },
+    {
+      "file": "113.json",
+      "repo": "affinipay/react-bootstrap-autosuggest",
+      "branch": "master",
+      "path": "package.json",
+      "blob": "d31e36bdcc3fd69da5ac85c32bcd02ac298d0bab",
+      "license": "ISC",
+      "bytes": 3564
+    },
+    {
+      "file": "114.json",
+      "repo": "affinipay/react-bootstrap-autosuggest",
+      "branch": "master",
+      "path": "demo/manifest.json",
+      "blob": "021fd002a48849d27e78eb44053b598a0e196d06",
+      "license": "ISC",
+      "bytes": 307
+    },
+    {
+      "file": "115.json",
+      "repo": "apiture/openapi-down-convert",
+      "branch": "main",
+      "path": "tsconfig.json",
+      "blob": "fdac8a47cf5bff42c219670be22d1aa2bc0286a4",
+      "license": "ISC",
+      "bytes": 446
+    },
+    {
+      "file": "116.json",
+      "repo": "apiture/openapi-down-convert",
+      "branch": "main",
+      "path": "package.json",
+      "blob": "78f3dcba1972055b8fd1160b6e42f56df85091ed",
+      "license": "ISC",
+      "bytes": 1663
+    },
+    {
+      "file": "117.json",
+      "repo": "dynamoose/dynamoose",
+      "branch": "main",
+      "path": "publish/package.json",
+      "blob": "fbe86aaca9eeec33b88e870cce06a6ab572e8914",
+      "license": "Unlicense",
+      "bytes": 316
+    },
+    {
+      "file": "118.json",
+      "repo": "dynamoose/dynamoose",
+      "branch": "main",
+      "path": "packages/dynamoose-utils/package.json",
+      "blob": "1e4deaab2ea54b4f37c8230cb9bfd3f197efef77",
+      "license": "Unlicense",
+      "bytes": 815
+    },
+    {
+      "file": "119.json",
+      "repo": "for-GET/know-your-http-well",
+      "branch": "master",
+      "path": "json/status-codes.json",
+      "blob": "4717414de77437b4140a321e48ae648dfb139928",
+      "license": "Unlicense",
+      "bytes": 22194
+    },
+    {
+      "file": "120.json",
+      "repo": "for-GET/know-your-http-well",
+      "branch": "master",
+      "path": "json/relations.json",
+      "blob": "eebac455f4b2b72901627861be9862c4e433bf72",
+      "license": "Unlicense",
+      "bytes": 17127
+    },
+    {
+      "file": "121.json",
+      "repo": "pakastin/frzr",
+      "branch": "master",
+      "path": "package.json",
+      "blob": "7319d87867442fa7b032996aae6ce2b696fcc90d",
+      "license": "ISC",
+      "bytes": 1056
+    },
+    {
+      "file": "122.json",
+      "repo": "mapbox/mapbox-gl-directions",
+      "branch": "main",
+      "path": "package.json",
+      "blob": "10bb621eca3f181605c9f31a8fa50335a14bf8ed",
+      "license": "ISC",
+      "bytes": 2343
+    },
+    {
+      "file": "123.json",
+      "repo": "fqborges/webpack-fix-style-only-entries",
+      "branch": "master",
+      "path": "package.json",
+      "blob": "f5f4f5082b89300acf7ea560951c874af88dab48",
+      "license": "ISC",
+      "bytes": 822
+    }
+  ]
+}

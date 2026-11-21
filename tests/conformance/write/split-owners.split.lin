@@ -1,0 +1,24 @@
+LIN 1
+plugins
++ id spell-check
+ summary @
+ sources[path|lines]
+  @|1
+  b|2
++ id 7
+ summary @
++ id has.dot
+ summary @
++ id 1.5
+ summary @
++ id true
+ summary @
++ summary @
+---
+@spell-check.summary This sentence is longer than twenty-four characters.
+@spell-check.sources.0.path This sentence is longer than twenty-four characters.
+@7.summary This sentence is longer than twenty-four characters.
+@plugins.2.summary This sentence is longer than twenty-four characters.
+@plugins.3.summary This sentence is longer than twenty-four characters.
+@plugins.4.summary This sentence is longer than twenty-four characters.
+@plugins.5.summary This sentence is longer than twenty-four characters.

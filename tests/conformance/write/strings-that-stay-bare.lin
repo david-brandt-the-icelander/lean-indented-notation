@@ -1,0 +1,12 @@
+LIN 1
+colon a: b
+hash # not a comment
+dash - x
+plus + y
+inner say "hi"
+pipe a|b
+unicode été 日本語 🙂
+url https://example.com/a?b=c#d
+at-inside a@b
+tilde-inside ~x
+brackets [x]

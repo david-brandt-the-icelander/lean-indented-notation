@@ -1,0 +1,59 @@
+{
+  "files": [
+    {
+      "path": "src/main.ts",
+      "size": 2048
+    },
+    {
+      "path": "README.md",
+      "size": 512
+    }
+  ],
+  "with-nulls": [
+    {
+      "a": null,
+      "b": "x|y"
+    },
+    {
+      "a": 1,
+      "b": ""
+    }
+  ],
+  "other-order": [
+    {
+      "a": 1,
+      "b": 2
+    },
+    {
+      "b": 3,
+      "a": 4
+    }
+  ],
+  "nested-value": [
+    {
+      "a": 1,
+      "b": [
+        1
+      ]
+    },
+    {
+      "a": 2,
+      "b": [
+        2
+      ]
+    }
+  ],
+  "quoted-key": [
+    {
+      "a b": 1
+    },
+    {
+      "a b": 2
+    }
+  ],
+  "one-row": [
+    {
+      "a": 1
+    }
+  ]
+}

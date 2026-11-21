@@ -1,0 +1,46 @@
+LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+$schema https://json-schema.org/draft/2020-12/schema
+type object
+properties
+ version{} type string
+ count{} type integer
+ flag{} type boolean
+ either
+  type[] integer|string
+ label{} $ref #/$defs/label
+ items
+  type array
+  items{} type string
+ pair
+  type array
+  prefixItems[type]
+   string
+   number
+ rows
+  type array
+  items
+   type object
+   properties
+    code{} type string
+    n{} type number
+ enumed
+  enum[] "1"|"2"
+ any {}
+ all
+  allOf
+  + type string
+  + minLength 1
+ one
+  oneOf[type]
+   string
+   null
+ map
+  type object
+  additionalProperties{} type string
+ pat
+  type object
+  patternProperties
+   ^s_{} type string
+ note{} type string
+$defs
+ label{} type string

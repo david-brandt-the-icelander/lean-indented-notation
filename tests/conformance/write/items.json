@@ -1,0 +1,38 @@
+{
+  "list": [
+    {
+      "name": "Ada",
+      "email": "ada@example.org",
+      "roles": [
+        "maintainer"
+      ]
+    },
+    {
+      "files": [
+        {
+          "p": 1
+        },
+        {
+          "p": 2
+        }
+      ],
+      "after": true
+    },
+    {
+      "sub": {
+        "deep": 1
+      }
+    },
+    {
+      "first": [
+        {
+          "a": 1,
+          "b": {
+            "c": 2
+          }
+        }
+      ]
+    },
+    {}
+  ]
+}

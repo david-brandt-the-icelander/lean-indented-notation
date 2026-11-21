@@ -1,0 +1,23 @@
+LIN 1
+plain 1
+200 2
+*.yml 3
+@types/node 4
+src/main.ts 5
+a.b 6
+$ref 7
+~ 8
+true 9
+x-y 10
+"two words" 11
+"#tag" 12
+"-dash" 13
+"+plus" 14
+"a|b" 15
+"a[b]" 16
+"a{b}" 17
+"" 18
+"q\"" 19
+"---" 20
+"tab\there" 21
+é 22

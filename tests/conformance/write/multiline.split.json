@@ -1,0 +1,22 @@
+{
+  "ok": "line one\nline two\n\nline four",
+  "indented": "a\n  b\n    c",
+  "trailing-newline": "a\nb\n",
+  "leading-newline": "\na",
+  "trailing-space": "a \nb",
+  "only-newline": "\n",
+  "in-list": [
+    "x\ny",
+    "z"
+  ],
+  "in-cell": [
+    {
+      "a": "x\ny",
+      "b": 1
+    },
+    {
+      "a": "z",
+      "b": 2
+    }
+  ]
+}

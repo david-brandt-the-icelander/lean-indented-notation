@@ -1,0 +1,37 @@
+{
+  "name": "example-registry",
+  "version": "2.3.0",
+  "description": "Plugins the example editor loads at start-up, in load order.",
+  "plugins": [
+    {
+      "id": "spell-check",
+      "title": "Spell check",
+      "enabled": true,
+      "priority": 10,
+      "summary": "Underlines misspelt words as you type and offers corrections.",
+      "tags": [
+        "text",
+        "language"
+      ],
+      "sources": [
+        {
+          "path": "src/spell.ts",
+          "lines": 120
+        },
+        {
+          "path": "dict/en.txt",
+          "lines": 5000
+        }
+      ]
+    },
+    {
+      "id": "word-count",
+      "title": "Word count",
+      "enabled": false,
+      "priority": "20",
+      "summary": "Shows the number of words in the document and the selection.",
+      "notes": "Off by default.\nTurn it on in Settings.",
+      "tags": []
+    }
+  ]
+}

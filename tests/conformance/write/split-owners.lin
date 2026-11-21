@@ -1,0 +1,16 @@
+LIN 1
+plugins
++ id spell-check
+ summary This sentence is longer than twenty-four characters.
+ sources[path|lines]
+  This sentence is longer than twenty-four characters.|1
+  b|2
++ id 7
+ summary This sentence is longer than twenty-four characters.
++ id has.dot
+ summary This sentence is longer than twenty-four characters.
++ id 1.5
+ summary This sentence is longer than twenty-four characters.
++ id true
+ summary This sentence is longer than twenty-four characters.
++ summary This sentence is longer than twenty-four characters.
