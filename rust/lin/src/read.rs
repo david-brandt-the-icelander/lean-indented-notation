@@ -46,11 +46,15 @@ pub fn read_header(line: &str, no: usize) -> Result<Header, Error> {
     if f.len() > 4 {
         return Err(err("too many fields in the header", no));
     }
-    if f.len() >= 3 && !crate::jcs::is_hash(f[2]) {
+    let kind = f.get(2).and_then(|s| crate::jcs::id_kind(s));
+    if f.len() >= 3 && kind.is_none() {
         return Err(err(
-            "the schema must be sha256- followed by 43 base64url characters",
+            "the schema id must be a registered number (1 to 9 digits, no leading zero) or a 39-digit provisional id",
             no,
         ));
+    }
+    if f.len() == 4 && kind != Some(crate::jcs::IdKind::Provisional) {
+        return Err(err("a url may follow only a provisional schema id", no));
     }
     if f.len() == 4 && (!f[3].starts_with("https://") || f[3].len() <= 8) {
         return Err(err("the schema url must start with https://", no));

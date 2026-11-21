@@ -18,7 +18,7 @@ pub mod text;
 pub mod value;
 pub mod write;
 
-pub use jcs::{canonicalize, schema_hash};
+pub use jcs::{canonicalize, id_kind, schema_id, schema_sha256, IdKind};
 pub use read::{parse, resolve, Parsed, Raw};
 pub use value::{Map, Number, Value};
 pub use write::{to_string_with, WriteOptions};
@@ -38,7 +38,7 @@ pub enum ErrorKind {
     Syntax,
     /// The header names a schema that was not supplied.
     SchemaRequired,
-    /// The schema supplied does not hash to the header's hash.
+    /// The schema supplied is not the one the header names.
     SchemaMismatch,
 }
 
@@ -88,11 +88,14 @@ pub fn read_header(text: &str) -> Result<Header, Error> {
 }
 
 /// How to read a file whose header names a schema.
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct ReadOptions {
     /// Read by the schema-less rules even though the header names a schema (an explicit
     /// choice, as spec section 7 requires).
     pub ignore_schema: bool,
+    /// For a registered number: the SHA-256 (hex) the registry's index records for it. The
+    /// schema given is checked against it. A provisional id is always checked.
+    pub sha256: Option<String>,
 }
 
 /// Read a LIN text that names no schema (or ignore it with [`from_str_opts`]).
@@ -126,12 +129,21 @@ pub fn from_str_with_schema(
                     .kind(ErrorKind::SchemaRequired))
                 }
                 Some(s) => {
-                    let got = schema_hash(s);
-                    if &got != h {
-                        return Err(Error::new(format!(
-                            "schema hash mismatch: the header names {h}, the schema given hashes to {got}"
-                        ))
-                        .kind(ErrorKind::SchemaMismatch));
+                    if id_kind(h) == Some(IdKind::Provisional) {
+                        let got = schema_id(s);
+                        if &got != h {
+                            return Err(Error::new(format!(
+                                "schema mismatch: the header names {h}, the schema given has id {got}"
+                            ))
+                            .kind(ErrorKind::SchemaMismatch));
+                        }
+                    } else if let Some(want) = &opts.sha256 {
+                        if &schema_sha256(s) != want {
+                            return Err(Error::new(format!(
+                                "schema mismatch: the schema given is not the one registered as {h}"
+                            ))
+                            .kind(ErrorKind::SchemaMismatch));
+                        }
                     }
                 }
             }

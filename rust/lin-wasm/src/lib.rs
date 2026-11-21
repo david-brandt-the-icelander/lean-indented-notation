@@ -31,6 +31,7 @@ pub fn lin_to_json(
         schema.as_ref(),
         ReadOptions {
             ignore_schema: ignore_schema.unwrap_or(false),
+            ..Default::default()
         },
     )
     .map_err(err)?;
@@ -114,13 +115,18 @@ pub fn read_header(text: &str) -> Result<String, JsError> {
     Ok(json::to_string(&Value::Object(m)))
 }
 
-/// The normalized SHA-256 (`sha256-…`) of a schema given as JSON text.
-#[wasm_bindgen(js_name = schemaHash)]
-pub fn schema_hash(schema_json: &str) -> Result<String, JsError> {
-    Ok(lin::schema_hash(&json::parse(schema_json).map_err(err)?))
+/// A schema's provisional id (39 digits) from its JSON text.
+#[wasm_bindgen(js_name = schemaId)]
+pub fn schema_id(schema_json: &str) -> Result<String, JsError> {
+    Ok(lin::schema_id(&json::parse(schema_json).map_err(err)?))
 }
 
-/// JSON text in canonical (RFC 8785) form.
+/// The SHA-256 (hex) of a schema's canonical JSON, as a registry records it.
+#[wasm_bindgen(js_name = schemaSha256)]
+pub fn schema_sha256(schema_json: &str) -> Result<String, JsError> {
+    Ok(lin::schema_sha256(&json::parse(schema_json).map_err(err)?))
+}
+
 #[wasm_bindgen]
 pub fn canonicalize(json_text: &str) -> Result<String, JsError> {
     Ok(lin::canonicalize(&json::parse(json_text).map_err(err)?))

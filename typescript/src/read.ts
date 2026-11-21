@@ -1,6 +1,6 @@
 // The LIN reader.
 
-import { isHash } from "./jcs.js";
+import { idKind } from "./jcs.js";
 import { LinError, Node, canonicalNumber, isIntegerText, isJsonNumber } from "./node.js";
 import { Pos, Typer, bareReadsAsString } from "./schema.js";
 import { badChar, bareKeyOk, decodeString, keyLenAt, segOk, segStop } from "./text.js";
@@ -24,7 +24,10 @@ export function readHeaderLine(line: string, no = 1): Header {
   if (f.length < 2 || f[0] !== "LIN") throw err(`the first line must be the header "LIN 1 [schema [url]]", found ${JSON.stringify(line)}`, no);
   if (f[1] !== "1") throw err(`unsupported LIN version ${JSON.stringify(f[1])}`, no);
   if (f.length > 4) throw err("too many fields in the header", no);
-  if (f.length >= 3 && !isHash(f[2])) throw err("the schema must be sha256- followed by 43 base64url characters", no);
+  const kind = f.length >= 3 ? idKind(f[2]) : null;
+  if (f.length >= 3 && kind === null)
+    throw err("the schema id must be a registered number (1 to 9 digits, no leading zero) or a 39-digit provisional id", no);
+  if (f.length === 4 && kind !== "provisional") throw err("a url may follow only a provisional schema id", no);
   if (f.length === 4 && (!f[3].startsWith("https://") || f[3].length <= 8)) throw err("the schema url must start with https://", no);
   return { version: 1, schema: f[2] ?? null, url: f[3] ?? null };
 }

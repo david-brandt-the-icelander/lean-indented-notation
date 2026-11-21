@@ -1,8 +1,8 @@
-LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+LIN 1 1
 $schema https://json-schema.org/draft/2020-12/schema
 $id https://github.com/david-brandt-the-icelander/lean-indented-notation/registries
 title LIN schema registries
-description Public content-addressed stores of LIN schemas. The schema with hash H is at <prefix>H.lin, and also at <prefix>H.json; a reader hashes whatever it fetches and rejects it if the hash differs.
+description Public stores of LIN schemas. A schema with provisional id P is at <prefix>P.lin (and <prefix>P.json); each registry also serves <prefix>index.lin. Only the official registry assigns registered numbers. A reader checks whatever it fetches against the provisional id and the SHA-256 the index records.
 type object
 required[] registries
 properties
@@ -15,6 +15,9 @@ properties
    properties
     name{} type string
     prefix{} type string|pattern ^https://[^ ]*/$
+    official
+     type boolean
+     description The registry that assigns registered numbers. Exactly one is official; the others mirror it.
     description{} type string
    additionalProperties false
 additionalProperties false

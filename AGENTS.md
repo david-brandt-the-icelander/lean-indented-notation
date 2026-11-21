@@ -40,9 +40,11 @@ together, then:
 ## Schemas
 
 `schemas/` is the default public registry. Files there are named by their content address
-(`sha256-….lin` and `.json`); never edit one in place, because its name is its hash. Publish a new
-or changed schema with `lin schema publish <file> --dir schemas`, which also rewrites
-`schemas/index.lin`. `lin check` fails if a file's data does not hash to its name.
+(`<provisional id>.lin` and `.json`); never edit one in place, because its name is its id. Publish a new
+or changed schema with `lin schema publish <file> --dir schemas`, which also adds it to
+`schemas/index.lin`; `lin schema register` also gives it the next number. Never change or reuse a
+number in `schemas/index.lin`. `lin check` fails if a file's data does not match its name or the
+index.
 
 ## Style
 

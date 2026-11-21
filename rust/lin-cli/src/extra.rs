@@ -4,8 +4,6 @@ use lin::{json, Map, Number, Value};
 
 use crate::Res;
 
-pub const META: &str = "sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars";
-
 // ------------------------------------------------------------ validation
 
 /// Validate `doc` against `schema`; each error as `path: message`.

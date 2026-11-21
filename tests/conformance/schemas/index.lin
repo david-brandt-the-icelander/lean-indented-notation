@@ -1,0 +1,7 @@
+LIN 1 3
+schemas
++ number 4242
+ provisional 321424259632272741133757556979922507983
+ sha256 f1d00f869dbac59c21da8d99297a18cf1c631de9df3c9fc26b846373989a1682
+ id ~
+ title Conformance-suite test schema (a fixture, not a real registration)

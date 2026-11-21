@@ -1,4 +1,4 @@
-LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+LIN 1 1
 $schema https://json-schema.org/draft/2020-12/schema
 $id https://json-schema.org/draft/2020-12/meta/meta-data
 $dynamicAnchor meta

@@ -14,7 +14,17 @@ BARE_KEY = re.compile(KEY_RE + r'\Z')
 KEY_AT = re.compile(KEY_RE)
 NUM = re.compile(r'-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?\Z')
 INT_TEXT = re.compile(r'-?\d+\Z')
-HASH = re.compile(r'sha256-[A-Za-z0-9_-]{43}\Z')
+REGISTERED_ID = re.compile(r'[1-9][0-9]{0,8}\Z')   # assigned by the official registry
+PROVISIONAL_ID = re.compile(r'[0-9]{39}\Z')         # 128 bits of the schema's SHA-256, in decimal
+
+
+def schema_id_kind(s):
+    """'registered', 'provisional', or None if s is not a schema id."""
+    if REGISTERED_ID.match(s):
+        return 'registered'
+    if PROVISIONAL_ID.match(s):
+        return 'provisional'
+    return None
 SEG = re.compile(r'[^.\s"|@]+')
 HEADLINE = frozenset({'id', 'kind', 'title', 'name', 'status', 'type'})
 _BAD = frozenset('\x7f\x85  ')
@@ -534,15 +544,18 @@ def walk_names(o, visit, owner=(), path=()):
 def header_line(schema=None, url=None):
     h = 'LIN ' + VERSION
     if schema:
-        if not HASH.match(schema):
-            raise ValueError('schema must be sha256- followed by 43 base64url characters')
+        kind = schema_id_kind(schema)
+        if kind is None:
+            raise ValueError('a schema id is a registered number (1 to 9 digits) or a 39-digit provisional id')
         h += ' ' + schema
+        if url and kind != 'provisional':
+            raise ValueError('a url may follow only a provisional schema id')
         if url:
             if not url.startswith('https://') or ' ' in url:
                 raise ValueError('schema url must start with https:// and have no spaces')
             h += ' ' + url
     elif url:
-        raise ValueError('a url needs a schema hash before it')
+        raise ValueError('a url needs a schema id before it')
     return h
 
 
@@ -852,8 +865,12 @@ def read_header(line, no=1):
         raise LinError(f'unsupported LIN version {f[1]!r}', no)
     if len(f) > 4:
         raise LinError('too many fields in the header', no)
-    if len(f) >= 3 and not HASH.match(f[2]):
-        raise LinError('the schema must be sha256- followed by 43 base64url characters', no)
+    kind = schema_id_kind(f[2]) if len(f) >= 3 else None
+    if len(f) >= 3 and kind is None:
+        raise LinError('the schema id must be a registered number (1 to 9 digits, no leading zero) '
+                       'or a 39-digit provisional id', no)
+    if len(f) == 4 and kind != 'provisional':
+        raise LinError('a url may follow only a provisional schema id', no)
     if len(f) == 4 and (not f[3].startswith('https://') or len(f[3]) <= 8):
         raise LinError('the schema url must start with https://', no)
     return {'version': int(f[1]), 'schema': f[2] if len(f) > 2 else None, 'url': f[3] if len(f) > 3 else None}
@@ -972,12 +989,13 @@ class SchemaRequired(LinError):
     """The file names a schema that was not supplied."""
 
 
-def loads(text, schema=None, *, ignore_schema=False, header_out=None):
+def loads(text, schema=None, *, ignore_schema=False, header_out=None, sha256=None):
     """Read LIN text into a JSON value.
 
     A file whose header names a schema is read with that schema (pass it as `schema`, as a JSON
-    value); its hash is checked against the header. Pass ignore_schema=True to read such a file by
-    the schema-less rules instead, as an explicit choice (spec section 7).
+    value). A provisional id is checked against the schema itself. A registered number is checked
+    when you pass `sha256`, the full hash the registry's index records for it. Pass
+    ignore_schema=True to read such a file by the schema-less rules instead (spec section 7).
     """
     header, head, data = parse(text)
     if header_out is not None:
@@ -985,10 +1003,14 @@ def loads(text, schema=None, *, ignore_schema=False, header_out=None):
     if header['schema'] and not ignore_schema:
         if schema is None:
             raise SchemaRequired(f'the file names schema {header["schema"]}; pass schema= or ignore_schema=True')
-        from .jcs import schema_hash
-        got = schema_hash(schema)
-        if got != header['schema']:
-            raise LinError(f'schema hash mismatch: the header names {header["schema"]}, the schema given hashes to {got}')
+        from .jcs import schema_id, schema_sha256
+        sid = header['schema']
+        if schema_id_kind(sid) == 'provisional':
+            got = schema_id(schema)
+            if got != sid:
+                raise LinError(f'schema mismatch: the header names {sid}, the schema given has id {got}')
+        elif sha256 is not None and schema_sha256(schema) != sha256:
+            raise LinError(f'schema mismatch: the schema given is not the one registered as {sid}')
     elif ignore_schema:
         schema = None
     return resolve(header, head, data, schema)

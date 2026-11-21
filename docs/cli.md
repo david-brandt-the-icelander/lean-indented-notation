@@ -80,7 +80,7 @@ result instead of writing.
 
 | Command | What it does |
 | --- | --- |
-| `lin check [PATHS]` | Syntax and every MUST rule, the final newline, validation against the file's schema, hashes of `sha256-…` files, and whether each `.lin` file's `.json` twin holds the same data. `--layout` also requires the writer's layout; `--require-siblings` requires a twin for every `.lin` |
+| `lin check [PATHS]` | Syntax and every MUST rule, the final newline, validation against the file's schema, that files named by a provisional id hold that schema, that a registry's `index.lin` matches its files, and whether each `.lin` file's `.json` twin holds the same data. `--layout` also requires the writer's layout; `--require-siblings` requires a twin for every `.lin` |
 | `lin validate FILE` | Validate against the header's schema, or `--schema FILE` |
 | `lin sync [PATHS]` | Write each `.lin` file's `.json` twin. If both exist and differ, the newer one wins (`--prefer lin|json` to choose). `--check` changes nothing and exits 1 if any pair is out of step or missing |
 
@@ -90,20 +90,25 @@ result instead of writing.
 
 | Command | What it does |
 | --- | --- |
-| `lin hash FILE` | The schema's content address, `sha256-` and 43 base64url characters |
+| `lin hash FILE` | The schema's provisional id: 39 digits from its normalized SHA-256. `--sha256` prints the full hash in hex |
 | `lin schema infer FILES` | A JSON Schema that the example files all satisfy, in LIN |
-| `lin schema get HASH` | Find a schema by hash and print it |
-| `lin schema publish FILE [--dir schemas]` | Write the schema into a registry directory as `<hash>.lin` and `<hash>.json`, and update its `index.lin` |
-| `lin schema index [--dir schemas]` | Rewrite a registry directory's `index.lin` |
+| `lin schema get ID` | Find a schema by registered number or provisional id and print it |
+| `lin schema publish FILE [--dir schemas]` | Write the schema into a registry directory as `<provisional id>.lin` and `.json`, and list it in its `index.lin` |
+| `lin schema register FILE [--dir schemas]` | Publish it and give it the next registered number (in the official registry's checkout) |
+| `lin schema upgrade [PATHS]` | Rewrite headers whose provisional id now has a registered number. `--check` lists them instead |
 | `lin schema where [FILE]` | The places a schema is looked for, in order |
 
-A file whose header names a schema is read with that schema, which decides whether bare `20` is a
-number or a string (spec section 7). `lin` looks for it in `LIN_SCHEMA_PATH`, in a `schemas/`
+A file whose header names a schema (a registered number such as `LIN 1 7`, or a 39-digit
+provisional id) is read with that schema, which decides whether bare `20` is a number or a string
+(spec section 7). A number is resolved through the registry's `index.lin`. `lin` looks for the
+schema in `LIN_SCHEMA_PATH`, in a `schemas/`
 directory beside the file or above it, in its cache (`LIN_CACHE_DIR`, by default
 `~/.cache/lin/schemas`), among the schemas built into it (the LIN meta-schema), at the header's URL,
 and in the public registries (`registries.lin`, or `LIN_REGISTRIES` as comma-separated prefixes). See
 [spec/registry.md](../spec/registry.md). `--offline` stops network lookups; `--no-schema` reads such
-files by the schema-less rules.
+files by the schema-less rules. Commands that only show data (`cat`, `outline`, `get`, `grep`,
+`query`, `flat`, `index`, `diff`, `merge`, `to-csv`, `tokens`) fall back to the schema-less rules on
+their own, with a note, when the schema cannot be found; conversions, edits and checks do not.
 
 ## Exit codes
 

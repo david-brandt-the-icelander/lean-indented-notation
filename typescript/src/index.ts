@@ -11,18 +11,20 @@
  * integer-like keys come first, and numbers are doubles (integers beyond 2^53 come back as
  * bigint). `linToJson` and `jsonToLin` work on text and keep key order and every digit.
  */
-import { canonicalize, isHash, schemaHash } from "./jcs.js";
+import { canonicalize, idKind, schemaId, schemaSha256 } from "./jcs.js";
 import { LinError, Node, SchemaRequiredError, fromJs, toJs } from "./node.js";
 import { Header, parse as parseRaw, readHeaderLine, resolve } from "./read.js";
 import { jsonCompact, jsonPretty, parseJson } from "./text.js";
 import { WriteOptions, writeNode } from "./write.js";
 
-export { LinError, SchemaRequiredError, canonicalize, schemaHash, isHash };
+export { LinError, SchemaRequiredError, canonicalize, idKind, schemaId, schemaSha256 };
 export type { Header, WriteOptions };
 
 export interface ReadOptions {
-  /** The schema the header names (a JavaScript value); its hash must match the header. */
+  /** The schema the header names (a JavaScript value). A provisional id is checked against it. */
   schema?: unknown;
+  /** For a registered number: the SHA-256 (hex) the registry records for it, to check the schema against. */
+  sha256?: string;
   /** Read a file that names a schema by the schema-less rules (an explicit choice, spec section 7). */
   ignoreSchema?: boolean;
 }
@@ -39,9 +41,11 @@ function readNode(text: string, o: ReadOptions = {}): Node {
   if (h) {
     if (o.ignoreSchema) schema = undefined;
     else if (schema === undefined) throw new SchemaRequiredError(`the file names schema ${h}; pass { schema } or { ignoreSchema: true }`);
-    else {
-      const got = schemaHash(schema);
-      if (got !== h) throw new LinError(`schema hash mismatch: the header names ${h}, the schema given hashes to ${got}`);
+    else if (idKind(h) === "provisional") {
+      const got = schemaId(schema);
+      if (got !== h) throw new LinError(`schema mismatch: the header names ${h}, the schema given has id ${got}`);
+    } else if (o.sha256 !== undefined && schemaSha256(schema) !== o.sha256) {
+      throw new LinError(`schema mismatch: the schema given is not the one registered as ${h}`);
     }
   }
   return resolve(parsed, schema);

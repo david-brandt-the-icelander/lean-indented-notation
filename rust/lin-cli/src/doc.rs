@@ -53,6 +53,9 @@ pub struct LoadOptions<'a> {
     pub store: &'a Store,
     /// Read by the schema-less rules even when the header names a schema.
     pub no_schema: bool,
+    /// When the schema cannot be found, read by the schema-less rules (with a note) instead of
+    /// failing. Views that only show data use this; conversions and edits do not.
+    pub lenient: bool,
 }
 
 pub fn load(path: Option<&Path>, o: &LoadOptions) -> Res<Doc> {
@@ -85,10 +88,15 @@ pub fn load_text(text: String, path: Option<&Path>, o: &LoadOptions) -> Res<Doc>
                 .header;
             let split = text.split('\n').any(|l| l == "---");
             let mut schema = None;
+            let mut ignore = o.no_schema;
             if let Some(h) = &header.schema {
                 if !o.no_schema {
                     match o.store.get(h, header.url.as_deref(), path) {
                         Ok(s) => schema = Some(s),
+                        Err(e) if o.lenient => {
+                            eprintln!("lin: note: {name}: schema {h} not found ({e}); read by the schema-less rules");
+                            ignore = true;
+                        }
                         Err(e) => {
                             return fail(format!(
                                 "{name}: the header names schema {h}, which could not be found ({e}). \
@@ -99,7 +107,8 @@ pub fn load_text(text: String, path: Option<&Path>, o: &LoadOptions) -> Res<Doc>
                 }
             }
             let ro = ReadOptions {
-                ignore_schema: o.no_schema,
+                ignore_schema: ignore,
+                ..Default::default()
             };
             let value = lin::from_str_with_schema(&text, schema.as_ref(), ro)
                 .map_err(|e| format!("{name}: {e}"))?;

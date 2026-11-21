@@ -28,7 +28,7 @@ The figures use OpenAI's `o200k_base` tokenizer as a stand-in; Claude's tokenize
 A LIN file is a header line, a head, and an optional data section after a `---` line. A file with no data section is in **plain form**; one with a data section is in **split form**.
 
 ```
-LIN 1 sha256-M804…yHos https://schemas.example.org/plugin-registry.lin   ← header
+LIN 1 7                    ← header: LIN version 1, schema number 7
 name example-app           ← head: structure and short values
 description @              ← value lives in the data section
 ---                        ← separator, alone on its line
@@ -38,9 +38,9 @@ description @              ← value lives in the data section
 **The header line** is `LIN <version> [<schema> [<url>]]`, with single spaces between fields:
 
 - `LIN` and `<version>`, the format's major version (`1`), are required. Only the major version is written: a minor version MUST NOT change how an existing file reads, so a reader never needs it.
-- `<schema>` is the SHA-256 of the file's schema, written as sha256- followed by 43 base64url characters; section 7 says how it is computed. It identifies both the kind of document and its version, so the data needs no `$schema` or version key. A file without it has no schema.
-- `<url>` is an `https://` location the schema can be fetched from. It is optional and only allowed after `<schema>`; the hash, not the URL, identifies the schema.
-- The header costs 4 tokens without a schema and about 36 with one, plus about 10 for a typical URL.
+- `<schema>` names the file's schema in one of two forms. A **registered number** has 1 to 9 digits and no leading zero, assigned by the official registry (`LIN 1 7`). A **provisional id** has exactly 39 digits, the first 128 bits of the schema's SHA-256 (section 7); anyone can compute it, and a schema that is never registered keeps it. The schema identifies both the kind of document and its version, so the data needs no `$schema` or version key. A file without it has no schema.
+- `<url>` is an `https://` location the schema can be fetched from. It is optional and only allowed after a provisional id; a registered number is looked up in the registry instead. The id, not the URL, identifies the schema.
+- The header costs 4 tokens without a schema. A registered number adds 2 tokens up to 999 and 3 up to 999,999; a provisional id adds 14, plus about 10 for a typical URL.
 
 **Other layout rules**
 
@@ -147,10 +147,11 @@ A scalar's type comes from the schema named in the header, never from how the va
 
 **Schemas**
 
-- A schema is a JSON Schema (draft 2020-12) document written in LIN. The meta-schema that schemas follow is published with this spec in LIN (Appendix C); a schema's header names its hash.
-- **Normalizing:** the schema's hash is computed from its data, not its text. Read the schema (LIN or JSON) into its JSON value, serialize that value with the JSON Canonicalization Scheme (RFC 8785), and take the SHA-256 of the resulting UTF-8 bytes. Write it as `sha256-` followed by the 32-byte digest in base64url without padding (RFC 4648 section 5), 43 characters. The header line is not part of the data, so it is not hashed, and a schema can name its own hash, as the meta-schema does. The same schema has the same hash whether written in LIN or JSON, plain or split, or with any writer's choices.
-- **Finding a schema:** the hash is the schema's content address in a public content-addressed registry, reached at an `https://` prefix followed by the content address (`https://<registry>/sha256-…`). The registry is defined separately from this spec; like a package registry, it is meant to be free to use. A reader looks the hash up in its local cache, then at the header's URL if one is given, then in the registry.
-- **Checking a schema:** a reader MUST normalize and hash whatever it fetches, and MUST reject it if the hash differs from the header. A reader that cannot obtain the schema MUST NOT read the file without it, unless its application has explicitly chosen to read without a schema.
+- A schema is a JSON Schema (draft 2020-12) document written in LIN. The meta-schema that schemas follow is published with this spec in LIN (Appendix C); it is registered as number 1, so every schema's header is LIN 1 1.
+- **Provisional ids:** a schema's provisional id is computed from its data, not its text. Read the schema (LIN or JSON) into its JSON value, serialize that value with the JSON Canonicalization Scheme (RFC 8785), and take the SHA-256 of the resulting UTF-8 bytes. The first 16 bytes, read as a big-endian unsigned integer and written in decimal with leading zeros to 39 digits, are the provisional id. Decimal is used because tokenizers split digits three at a time, so 39 digits are always 13 tokens. The header line is not part of the data, so it is not hashed, and a schema can name itself. The same schema has the same id whether written in LIN or JSON, plain or split, or with any writer's choices.
+- **Registered numbers:** the official registry gives a schema it accepts the next number, and records the number with the schema's provisional id and full SHA-256 in its index. A number is never reassigned, and its schema never changes: a changed schema is a new schema. A registry refuses a schema whose provisional id it already lists with other content. Only the official registry assigns numbers; others mirror its index. The repository's `registries.lin` lists the registries, and `spec/registry.md` describes their layout and the numbers assigned so far.
+- **Finding a schema:** a reader resolves a registered number through a registry index (its own copy, then the official registry's) to the schema's provisional id and SHA-256. It then looks the provisional id up in its local stores, at the header's URL if there is one, and in each registry, at the registry's `https://` prefix followed by the id and `.lin`.
+- **Checking a schema:** a reader MUST compute the provisional id of whatever it fetches and reject it if the id differs; for a registered number it MUST also reject it if its SHA-256 differs from the one the index records. 128 bits alone are not a strong security boundary; the registry's refusal of a second schema with the same id, and the full SHA-256 it records, are. A reader that cannot obtain the schema MUST NOT convert or rewrite the file without it, unless its application explicitly chooses the schema-less rules. Tools that only show or search data may read it by the schema-less rules, saying so.
 
 ## 8. Split form: data section and references
 
@@ -208,8 +209,9 @@ One command, `lin`, gives agents cheap partial views; views are generated on dem
 | `lin head <file>` | the head of a split-form file |
 | `lin get <file> <name>` | one object (by `id`) or one value (by reference name), fully resolved |
 | `lin to-json <file>` / `lin from-json <file>` | the conversion in section 9, plain or split |
-| `lin check [paths…]` | syntax errors, broken MUST rules, schema errors, and schemas whose hash does not match the header |
-| `lin hash <schema>` | the normalized SHA-256 of a schema file, for the header (section 7) |
+| `lin check [paths…]` | syntax errors, broken MUST rules, schema errors, schemas that do not match the header's id, and registry indexes that do not match their files |
+| `lin hash <schema>` | a schema's provisional id, for the header (section 7) |
+| `lin schema register <schema>` / `lin schema upgrade` | give a schema the next registered number (in the official registry), and rewrite headers that use its provisional id |
 
 - Agents SHOULD find things with `lin index` or `lin outline`, read them with `lin get`, and open whole files only to edit them.
 - A file that fails `lin check` MUST NOT be committed.
@@ -229,7 +231,7 @@ In git, a change shows as the changed lines only, and every data line names its 
 
 ## 12. Full example
 
-A plugin registry, its schema, and the registry in both LIN forms. Every LIN text here was produced by the reference writer and read back to identical JSON, and the hashes were computed as section 7 describes.
+A plugin registry, its schema, and the registry in both LIN forms. Every LIN text here was produced by the reference writer and read back to identical JSON, and the schema ids were computed as section 7 describes.
 
 **The data, as JSON:**
 
@@ -249,10 +251,10 @@ A plugin registry, its schema, and the registry in both LIN forms. Every LIN tex
  ]}
 ```
 
-**The schema, in LIN** (`plugin-registry.lin`). Its header names the JSON Schema 2020-12 meta-schema, whose normalized hash is `sha256-wcrP…H4Ars`; the schema's own normalized hash is `sha256-M804…yHos`.
+**The schema, in LIN** (`plugin-registry.lin`). Its header names the JSON Schema 2020-12 meta-schema by its registered number, 1. The schema itself is not registered, so the data names it by its provisional id, `068856193987000667701029602040289804041`, followed by a URL.
 
 ```
-LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+LIN 1 1
 $schema https://json-schema.org/draft/2020-12/schema
 title Plugin registry
 type object
@@ -289,7 +291,7 @@ properties
 **The data in plain form:**
 
 ```
-LIN 1 sha256-M804eExtUC7S2al_N82_CXtgd3ip0TT4ppYaSQtyHos https://schemas.example.org/plugin-registry.lin
+LIN 1 068856193987000667701029602040289804041 https://schemas.example.org/plugin-registry.lin
 name example-registry
 version 2.3.0
 description Plugins the example editor loads at start-up, in load order.
@@ -317,7 +319,7 @@ plugins
 **The data in split form,** with the recommended default limits:
 
 ```
-LIN 1 sha256-M804eExtUC7S2al_N82_CXtgd3ip0TT4ppYaSQtyHos https://schemas.example.org/plugin-registry.lin
+LIN 1 068856193987000667701029602040289804041 https://schemas.example.org/plugin-registry.lin
 name example-registry
 version 2.3.0
 description @
@@ -357,9 +359,10 @@ The line-level grammar, informally in ABNF; indentation (`IND` = 1 space per lev
 
 ```
 file          = header LF head [ "---" LF data ]
-header        = "LIN " version [ SP schema-hash [ SP url ] ]
+header        = "LIN " version [ SP registered / SP provisional [ SP url ] ]
 version       = 1*DIGIT                     ; the major version, "1"
-schema-hash   = "sha256-" 43( ALPHA / DIGIT / "-" / "_" )  ; base64url, no padding
+registered    = %x31-39 0*8DIGIT            ; a number the official registry assigned
+provisional   = 39DIGIT                     ; 128 bits of the schema's SHA-256, in decimal
 url           = "https://" 1*( any char but space )
 head          = [ root-list ] *line
 root-list     = "[]" LF                     ; empty root list
@@ -392,7 +395,7 @@ segment       = 1*( any char but ".", whitespace, '"', "|", "@" )  ; no quoting
 
 These are decided in principle and left to be specified later.
 
-- **The registry.** Schemas are fetched from an `https://` prefix followed by the content address. Which registry, and how it is run so that it can be free to use, like a package registry, will be defined separately.
+- **The registry's hosting.** The official registry is the `schemas/` directory of the LIN repository, served over https from GitHub, with its `index.lin` recording every registered number (the repository's `spec/registry.md`). How registrations are reviewed, and whether the registry moves to a domain of its own, are still to be decided.
 - **Confirming the figures with Claude's tokenizer.** All figures use `o200k_base` as a stand-in.
 - **Licence of the published meta-schema.** Appendix C carries JSON Schema 2020-12's meta-schemas in LIN; check the JSON Schema project's licence terms before publishing them with the spec.
 
@@ -416,7 +419,7 @@ Each rule in LIN was chosen by counting the tokens of the alternatives. Tokenize
 | Multi-line text | `"Off by default.\nTurn it on…"` | 16 | `notes \|` and indented lines | 15 | `\n` costs 2 tokens as an escape; a real line end often merges with the punctuation before it (`.` + line end is one token). |
 | Non-ASCII text | `"été"` (escaped) | 11 | `été` | 1 | Writing characters as themselves avoids escapes, which tokenize as several tokens each. |
 | List item markers | `"text",` | 5 | `- text` / `+ id …` | 5 | One item per line costs 3 tokens an item (indent, marker, line end), so short items go inline as key\[\] a\|b\|c, at 1 token an item, as in minified JSON. Long items keep their own lines, so a diff shows which one changed. |
-| Version line | — | — | `LIN 1` | 4 | The version alone would cost 2 (`1` and a line end), and `1.0.2` costs 6 because each digit and dot is a token. `LIN 1` costs 4 and makes the file recognizable. A schema hash adds about 32 tokens as sha256- and base64url, against about 37 in hex. |
+| Version line | — | — | `LIN 1` | 4 | The version alone would cost 2 (`1` and a line end), and `1.0.2` costs 6 because each digit and dot is a token. `LIN 1` costs 4 and makes the file recognizable. A schema id adds 2 tokens as a registered number up to 999, 3 up to 999,999, and 14 as a 39-digit provisional id. The earlier form, sha256- and base64url, cost about 32. |
 | Head separator | — | — | `---` | 1 | `---` plus its line end is a single token. |
 | Reference | — | — | `summary @` | 4 | `@` is one token; a name (`@root-views.summary`) would repeat what the position already says. |
 
@@ -429,7 +432,7 @@ Token counts include the line end, and use OpenAI's `o200k_base` tokenizer as a 
 - **Numeric references into the data section.** They cost about the same as names but break when values are inserted or removed, and two branches adding values conflict.
 - **A length header for the head.** It must be updated on every edit; a `---` line costs 1 token and never goes stale.
 - **Dropping list markers.** A bare `   text ` line saves nothing over `   - text ` in most cases and would make items indistinguishable from keys.
-- **Other hash encodings.** Hex costs about 37 tokens, base32 about 32, and `sha256-` with base64url about 32 (bare base64url about 30). Base85 and similar alphabets are shorter but contain characters that `grep`, `sed`, `awk` and the shell treat as special. The `sha256-` prefix costs 2 tokens and is kept: it names the algorithm, so another can be added later, and it stops a hash that starts with `-` from being read as a command-line option. Hashes cut to 128 or 192 bits would save 8–15 tokens but would no longer match the full SHA-256 that content-addressed registries index by.
+- **Other schema-id encodings.** A 128-bit id costs 14 tokens in decimal, 15 in base64url, 16 in base62 or base36, and 33 with digits and letters alternating (`1a2s3d4f` is 8 tokens, `1234asdf` is 3): tokenizers split digits three at a time and random letters one or two at a time. Decimal also needs no characters that `grep`, `sed`, `awk` or the shell treat as special. The full SHA-256 cost about 32 tokens as `sha256-` and base64url; the `sha256-` prefix was dropped because the version number already fixes the algorithm. English words carry more bits per token, but only with spaces between them, which break the header's fields. A registered number costs 2 or 3 tokens, so schemas that many files share are registered.
 - **Folded paths (`a.b.c value`).** Writing an object that has one key on its parent's line would save 0.5% on the sample. But keys with dots, such as `package.json` or `eslint.enable`, would then need quotes, and an agent adding a key beside a folded one would create a duplicate.
 - **Sparse tables.** Empty cells for missing keys would save 0.04%: lists whose items have different keys usually hold nested values too, so they could not be tables anyway.
 - **Tables with nested fields under each row.** Moving the shared scalar keys of mixed objects into a header would save 0.4%, at the cost of a third kind of list for agents to learn.
@@ -606,26 +609,26 @@ The files were downloaded for measurement only and are not redistributed; the li
 
 ## Appendix C. The LIN meta-schema
 
-The meta-schema that LIN schemas follow is JSON Schema 2020-12, published with this spec in LIN. It is eight documents: the main meta-schema and the seven vocabulary meta-schemas it includes with `allOf`. Each was converted from json-schema.org's JSON and reads back to identical data, so its hash is the same as the JSON original's.
+The meta-schema that LIN schemas follow is JSON Schema 2020-12, published with this spec in LIN. It is eight documents: the main meta-schema and the seven vocabulary meta-schemas it includes with `allOf`. Each was converted from json-schema.org's JSON and reads back to identical data, so its provisional id is the same as the JSON original's. The main meta-schema is registered as number 1; the vocabularies are referred to by $id, not by any header, so they keep their provisional ids.
 
-| `$id` (under `https://json-schema.org/draft/2020-12/`) | Hash |
+| `$id` (under `https://json-schema.org/draft/2020-12/`) | Number or provisional id |
 | --- | --- |
-| `schema` (main) | `sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars` |
-| `meta/core` | `sha256-rYIVMHECYTpbxewIO3m7cFkmdJ164g7AapUNzu_3tz4` |
-| `meta/applicator` | `sha256-may8pJYoFfev-pvC-3PaZNeciE0ilp0gMjmzAtarwVs` |
-| `meta/unevaluated` | `sha256-TLdSXoAYb-3G_UCkjHTr-SG6ULKAmHpRxT-zcDgJWBw` |
-| `meta/validation` | `sha256-nC5JxRGEktjjr7tWjih33KajTKPKi99pPu4ONQco-DM` |
-| `meta/meta-data` | `sha256-0cao2J2xjwekmN8WdCyjZf2mdr44gIgw8Lc42LncE2A` |
-| `meta/format-annotation` | `sha256-giK6XQfewAlGPLo0Xo6ZhAAcU5LCa15lcEbwuF2MgrU` |
-| `meta/content` | `sha256-tLngpb9Ypy0MzWztLD0UK0VgfinH3QTSRRVVvFLYZYg` |
+| `schema` (main) | `1` |
+| `meta/core` | `230631871630928134081358861136639409008` |
+| `meta/applicator` | `204268784547655470004489683923042032228` |
+| `meta/unevaluated` | `101973188649443879620232466638130441209` |
+| `meta/validation` | `207599909227210076967483512369187420124` |
+| `meta/meta-data` | `278840150503937631720490556150644515685` |
+| `meta/format-annotation` | `172979957444070324120297600708435155332` |
+| `meta/content` | `240226170551730644875985711096481518635` |
 
-- Every one of the eight has the main meta-schema's hash in its header. The main meta-schema names its own hash, which works because the header is not part of the hashed data.
-- The documents refer to each other by `$id` URI, as JSON Schema does; the table maps each `$id` to its hash, so a reader can resolve them from the registry.
+- Every one of the eight starts `LIN 1 1`: its header names the main meta-schema, number 1. The main meta-schema names itself, which works because the header is not part of the hashed data.
+- The documents refer to each other by `$id` URI, as JSON Schema does; the table maps each `$id` to its number or provisional id, so a reader can resolve them from the registry.
 
 **Main meta-schema** (`schema.lin`)
 
 ```
-LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+LIN 1 1
 $schema https://json-schema.org/draft/2020-12/schema
 $id https://json-schema.org/draft/2020-12/schema
 $vocabulary
@@ -677,7 +680,7 @@ properties
 **Core vocabulary** (`meta/core.lin`)
 
 ```
-LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+LIN 1 1
 $schema https://json-schema.org/draft/2020-12/schema
 $id https://json-schema.org/draft/2020-12/meta/core
 $dynamicAnchor meta
@@ -710,7 +713,7 @@ $defs
 **Applicator vocabulary** (`meta/applicator.lin`)
 
 ```
-LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+LIN 1 1
 $schema https://json-schema.org/draft/2020-12/schema
 $id https://json-schema.org/draft/2020-12/meta/applicator
 $dynamicAnchor meta
@@ -752,7 +755,7 @@ $defs
 **Unevaluated vocabulary** (`meta/unevaluated.lin`)
 
 ```
-LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+LIN 1 1
 $schema https://json-schema.org/draft/2020-12/schema
 $id https://json-schema.org/draft/2020-12/meta/unevaluated
 $dynamicAnchor meta
@@ -766,7 +769,7 @@ properties
 **Validation vocabulary** (`meta/validation.lin`)
 
 ```
-LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+LIN 1 1
 $schema https://json-schema.org/draft/2020-12/schema
 $id https://json-schema.org/draft/2020-12/meta/validation
 $dynamicAnchor meta
@@ -816,7 +819,7 @@ $defs
 **Meta-data vocabulary** (`meta/meta-data.lin`)
 
 ```
-LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+LIN 1 1
 $schema https://json-schema.org/draft/2020-12/schema
 $id https://json-schema.org/draft/2020-12/meta/meta-data
 $dynamicAnchor meta
@@ -835,7 +838,7 @@ properties
 **Format-annotation vocabulary** (`meta/format-annotation.lin`)
 
 ```
-LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+LIN 1 1
 $schema https://json-schema.org/draft/2020-12/schema
 $id https://json-schema.org/draft/2020-12/meta/format-annotation
 $dynamicAnchor meta
@@ -848,7 +851,7 @@ properties
 **Content vocabulary** (`meta/content.lin`)
 
 ```
-LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars
+LIN 1 1
 $schema https://json-schema.org/draft/2020-12/schema
 $id https://json-schema.org/draft/2020-12/meta/content
 $dynamicAnchor meta
