@@ -8,13 +8,14 @@ repository.workspace = true
 rust-version.workspace = true
 
 build = "build.rs"
+include = ["src/**", "build.rs", "Cargo.toml", "embedded/**"]
 
 [[bin]]
 name = "lin"
 path = "src/main.rs"
 
 [dependencies]
-lin-notation = { path = "../lin", features = ["serde_json"] }
+lin-notation = { version = "1.0.0", path = "../lin", features = ["serde_json"] }
 clap = { version = "4", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
 jaq-core = "3"

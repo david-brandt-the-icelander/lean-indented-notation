@@ -3,7 +3,14 @@
 use std::{env, fs, path::Path};
 
 fn main() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    // In the repository the files are two levels up; a packaged crate carries copies in embedded/
+    // (the release script puts them there before `cargo publish`).
+    let here = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let root = if here.join("embedded/schemas").is_dir() {
+        here.join("embedded")
+    } else {
+        here.join("../..")
+    };
     let dir = root.join("schemas");
     println!("cargo:rerun-if-changed={}", dir.display());
     println!(
