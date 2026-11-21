@@ -1,0 +1,6 @@
+LIN 1
+a @a
+b @other
+---
+@a one
+@other two

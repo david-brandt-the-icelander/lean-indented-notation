@@ -1,0 +1,40 @@
+{
+  "words": [
+    "a",
+    "b",
+    "c"
+  ],
+  "nums": [
+    1,
+    2.5,
+    -3
+  ],
+  "mixed": [
+    "x",
+    1,
+    true,
+    null,
+    "",
+    "a|b",
+    "1"
+  ],
+  "long": [
+    "This sentence is longer than twenty-four characters.",
+    "short"
+  ],
+  "nested": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      [
+        4,
+        5
+      ]
+    ],
+    [],
+    {}
+  ]
+}

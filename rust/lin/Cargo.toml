@@ -1,0 +1,23 @@
+[package]
+name = "lin-notation"
+description = "LIN (Lean Indented Notation): JSON's data model in fewer tokens, for AI agents"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[lib]
+name = "lin"
+
+[dependencies]
+indexmap = "2"
+ryu-js = "1"
+sha2 = "0.10"
+base64 = "0.22"
+regex-lite = "0.1"
+serde_json = { version = "1", optional = true, features = ["preserve_order"] }
+
+[features]
+default = []
+serde_json = ["dep:serde_json"]

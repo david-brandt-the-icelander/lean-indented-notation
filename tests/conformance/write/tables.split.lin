@@ -1,0 +1,22 @@
+LIN 1
+files[path|size]
+ src/main.ts|2048
+ README.md|512
+with-nulls[a|b]
+ ~|"x|y"
+ 1|""
+other-order
++ a 1
+ b 2
++ b 3
+ a 4
+nested-value
++ a 1
+ b[] 1
++ a 2
+ b[] 2
+quoted-key
++ "a b" 1
++ "a b" 2
+one-row
++ a 1

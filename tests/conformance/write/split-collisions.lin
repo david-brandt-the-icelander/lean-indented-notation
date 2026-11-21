@@ -1,0 +1,7 @@
+LIN 1
+a[id|d]
+ x|This sentence is longer than twenty-four characters.
+ x|This sentence is longer than twenty-four characters. 2
+ x|This sentence is longer than twenty-four characters. 3
+x
+ d~2 This sentence is longer than twenty-four characters. 4

@@ -1,0 +1,15 @@
+LIN 1
+title This sentence is longer than twenty-four characters.
+description @
+short ok
+n 12345678901234567890123456789
+tags @
+notes @
+---
+@description This sentence is longer than twenty-four characters.
+@tags
+ - short
+ - This sentence is longer than twenty-four characters.
+@notes |
+ line one of a long note
+ line two of a long note

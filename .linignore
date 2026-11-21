@@ -1,0 +1,5 @@
+# Files that lin check and lin sync skip. One glob per line; a pattern without / matches at any depth.
+# Conformance cases that every reader must reject:
+tests/conformance/invalid/
+# A valid file kept without its final newline on purpose:
+tests/conformance/read/no-final-newline.lin

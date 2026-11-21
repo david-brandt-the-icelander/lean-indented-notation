@@ -1,0 +1,15 @@
+{
+  "steps": [
+    "This sentence is longer than twenty-four characters.",
+    {
+      "k": 1
+    },
+    "This sentence is longer than twenty-four characters.\nsecond line"
+  ],
+  "deep": {
+    "inline": {
+      "a": "This sentence is longer than twenty-four characters.",
+      "b": 1
+    }
+  }
+}

@@ -1,0 +1,20 @@
+LIN 1
+ok @
+indented |
+ a
+   b
+     c
+trailing-newline "a\nb\n"
+leading-newline "\na"
+trailing-space "a \nb"
+only-newline "\n"
+in-list[] "x\ny"|z
+in-cell[a|b]
+ "x\ny"|1
+ z|2
+---
+@ok |
+ line one
+ line two
+
+ line four

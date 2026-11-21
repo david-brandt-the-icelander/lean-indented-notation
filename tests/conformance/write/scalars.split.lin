@@ -1,0 +1,8 @@
+LIN 1
+s text
+i 42
+neg -7
+f 1.5
+t true
+f2 false
+n ~

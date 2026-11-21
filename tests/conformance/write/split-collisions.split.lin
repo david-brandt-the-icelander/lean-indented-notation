@@ -1,0 +1,12 @@
+LIN 1
+a[id|d]
+ x|@x.d~3
+ x|@x.d~4
+ x|@x.d~5
+x
+ d~2 @
+---
+@x.d~3 This sentence is longer than twenty-four characters.
+@x.d~4 This sentence is longer than twenty-four characters. 2
+@x.d~5 This sentence is longer than twenty-four characters. 3
+@x.d~2 This sentence is longer than twenty-four characters. 4

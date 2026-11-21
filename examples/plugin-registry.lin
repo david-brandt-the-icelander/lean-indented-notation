@@ -1,0 +1,23 @@
+LIN 1 sha256-M804eExtUC7S2al_N82_CXtgd3ip0TT4ppYaSQtyHos https://schemas.example.org/plugin-registry.lin
+name example-registry
+version 2.3.0
+description Plugins the example editor loads at start-up, in load order.
+plugins
++ id spell-check
+ title Spell check
+ enabled true
+ priority 10
+ summary Underlines misspelt words as you type and offers corrections.
+ tags[] text|language
+ sources[path|lines]
+  src/spell.ts|120
+  dict/en.txt|5000
++ id word-count
+ title Word count
+ enabled false
+ priority "20"
+ summary Shows the number of words in the document and the selection.
+ notes |
+  Off by default.
+  Turn it on in Settings.
+ tags []

@@ -1,0 +1,23 @@
+LIN 1
+top
+ x 1
+ y 2
+deeper
+ size{} w 640|h 480
+ one{} k v
+ quoted{} a "x|y"|b "1"
+ long{} text @
+ empty {}
+ nested
+  inner{} leaf 1
+ badkey
+  "a b" 1
+list
++ a 1
+ b 2
+-
+ + a 1
+ -{} a 1|b 2
+ -{} a 1|b 2|c 3
+---
+@deeper.long.text This sentence is longer than twenty-four characters. This sentence is longer than twenty-four characters.

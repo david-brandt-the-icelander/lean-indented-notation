@@ -1,0 +1,9 @@
+#!/bin/sh
+# Keeps every .lin file and its .json twin in step. Enable with: git config core.hooksPath .githooks
+LIN="${LIN:-$(command -v lin || echo rust/target/release/lin)}"
+if [ ! -x "$LIN" ] && ! command -v "$LIN" >/dev/null 2>&1; then
+  echo "pre-commit: lin not found; build it with: cargo build --release --manifest-path rust/Cargo.toml -p lin-cli" >&2
+  exit 1
+fi
+"$LIN" --offline sync --check . || { echo "pre-commit: run 'lin sync' to bring .lin and .json files into step" >&2; exit 1; }
+"$LIN" --offline check . >/dev/null || { "$LIN" --offline check .; exit 1; }

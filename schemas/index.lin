@@ -1,0 +1,11 @@
+LIN 1
+schemas[hash|id|title]
+ sha256-0cao2J2xjwekmN8WdCyjZf2mdr44gIgw8Lc42LncE2A|https://json-schema.org/draft/2020-12/meta/meta-data|Meta-data vocabulary meta-schema
+ sha256-GNvQTexeyzKBidPglSpH44StGNk1FBL1sWQD2cKVZA0|https://github.com/david-brandt-the-icelander/lean-indented-notation/registries|LIN schema registries
+ sha256-TLdSXoAYb-3G_UCkjHTr-SG6ULKAmHpRxT-zcDgJWBw|https://json-schema.org/draft/2020-12/meta/unevaluated|Unevaluated applicator vocabulary meta-schema
+ sha256-giK6XQfewAlGPLo0Xo6ZhAAcU5LCa15lcEbwuF2MgrU|https://json-schema.org/draft/2020-12/meta/format-annotation|Format vocabulary meta-schema for annotation results
+ sha256-may8pJYoFfev-pvC-3PaZNeciE0ilp0gMjmzAtarwVs|https://json-schema.org/draft/2020-12/meta/applicator|Applicator vocabulary meta-schema
+ sha256-nC5JxRGEktjjr7tWjih33KajTKPKi99pPu4ONQco-DM|https://json-schema.org/draft/2020-12/meta/validation|Validation vocabulary meta-schema
+ sha256-rYIVMHECYTpbxewIO3m7cFkmdJ164g7AapUNzu_3tz4|https://json-schema.org/draft/2020-12/meta/core|Core vocabulary meta-schema
+ sha256-tLngpb9Ypy0MzWztLD0UK0VgfinH3QTSRRVVvFLYZYg|https://json-schema.org/draft/2020-12/meta/content|Content vocabulary meta-schema
+ sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars|https://json-schema.org/draft/2020-12/schema|Core and Validation specifications meta-schema

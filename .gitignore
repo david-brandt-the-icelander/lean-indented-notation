@@ -1,0 +1,11 @@
+rust/target/
+rust/lin-wasm/js/pkg/
+rust/lin-wasm/pkg-node/
+typescript/node_modules/
+typescript/dist/
+typescript/build-test/
+python/**/__pycache__/
+python/**/*.egg-info/
+python/build/
+bench/files/
+*.tmp-lin

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIN converter</title>
+<style>
+  :root { --bg: #fff; --fg: #1d1d1f; --muted: #6b6b70; --line: #d9d9de; --accent: #2f5bd3; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #17171a; --fg: #ececf0; --muted: #9a9aa2; --line: #34343a; --accent: #7d9cff; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  p { color: var(--muted); margin: 0 0 16px; }
+  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .panes { grid-template-columns: 1fr; } }
+  label { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 6px; }
+  label span { font-weight: 400; color: var(--muted); }
+  textarea { width: 100%; box-sizing: border-box; height: 420px; font: 13px/1.45 ui-monospace, monospace; background: transparent;
+    color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; resize: vertical; }
+  .bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
+  button { background: var(--accent); color: #fff; border: 0; border-radius: 6px; padding: 7px 14px; font: inherit; cursor: pointer; }
+  #error { color: #d33; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<main>
+  <h1>LIN converter</h1>
+  <p>JSON and LIN (Lean Indented Notation), converted in the page by the Rust library compiled to WebAssembly.</p>
+  <div class="bar">
+    <button id="toLin">JSON → LIN</button>
+    <button id="toJson">LIN → JSON</button>
+    <label><input type="checkbox" id="split"> split form</label>
+    <span id="error"></span>
+  </div>
+  <div class="panes">
+    <div><label for="json">JSON <span id="jsonSize"></span></label><textarea id="json" spellcheck="false"></textarea></div>
+    <div><label for="lin">LIN <span id="linSize"></span></label><textarea id="lin" spellcheck="false"></textarea></div>
+  </div>
+</main>
+<script type="module">
+  import init, { jsonToLin, linToJson, Options } from "../js/lin.js";
+  await init();
+  const $ = (id) => document.getElementById(id);
+  const sizes = () => { $("jsonSize").textContent = $("json").value.length + " characters"; $("linSize").textContent = $("lin").value.length + " characters"; };
+  const run = (f) => { try { $("error").textContent = ""; f(); } catch (e) { $("error").textContent = e.message; } sizes(); };
+  $("json").value = JSON.stringify({ name: "example-registry", version: "2.3.0",
+    plugins: [{ id: "spell-check", title: "Spell check", enabled: true, tags: ["text", "language"],
+      sources: [{ path: "src/spell.ts", lines: 120 }, { path: "dict/en.txt", lines: 5000 }] }] }, null, 2);
+  $("toLin").onclick = () => run(() => { const o = new Options(); o.split = $("split").checked; $("lin").value = jsonToLin($("json").value, o); });
+  $("toJson").onclick = () => run(() => { $("json").value = linToJson($("lin").value, undefined, true); });
+  $("toLin").click();
+  document.body.dataset.ready = "1";
+</script>
+</body>
+</html>
