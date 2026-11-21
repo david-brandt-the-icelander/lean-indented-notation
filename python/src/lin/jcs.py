@@ -1,5 +1,4 @@
-"""RFC 8785 JSON Canonicalization and LIN schema hashes (spec section 7)."""
-import base64
+"""RFC 8785 JSON Canonicalization and LIN schema ids (spec section 7)."""
 import hashlib
 
 from .core import is_number, json_string, num
@@ -30,7 +29,13 @@ def canonicalize(v):
     raise TypeError(f'not a JSON value: {type(v).__name__}')
 
 
-def schema_hash(schema):
-    """sha256- and the base64url (no padding) SHA-256 of the schema's canonical JSON."""
+def schema_sha256(schema):
+    """The SHA-256 of the schema's canonical JSON, in hex: what a registry records."""
+    return hashlib.sha256(canonicalize(schema).encode('utf-8')).hexdigest()
+
+
+def schema_id(schema):
+    """The schema's provisional id: the first 128 bits of its SHA-256 as a 39-digit decimal number.
+    Digits are the cheapest text for tokenizers, which split them three at a time."""
     d = hashlib.sha256(canonicalize(schema).encode('utf-8')).digest()
-    return 'sha256-' + base64.urlsafe_b64encode(d).decode('ascii').rstrip('=')
+    return str(int.from_bytes(d[:16], 'big')).zfill(39)

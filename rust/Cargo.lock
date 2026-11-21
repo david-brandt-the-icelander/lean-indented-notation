@@ -681,7 +681,6 @@ dependencies = [
 name = "lin-notation"
 version = "1.0.0"
 dependencies = [
- "base64 0.22.1",
  "indexmap",
  "regex-lite",
  "ryu-js",

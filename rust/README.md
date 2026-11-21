@@ -2,7 +2,7 @@
 
 | Crate | What it is |
 | --- | --- |
-| [`lin`](lin/) (`lin-notation`) | The library: reader, writer, schema typing, JSON, RFC 8785 hashing |
+| [`lin`](lin/) (`lin-notation`) | The library: reader, writer, schema typing, JSON, RFC 8785 schema ids |
 | [`lin-cli`](lin-cli/) | The `lin` command-line tool ([docs/cli.md](../docs/cli.md)) |
 | [`lin-wasm`](lin-wasm/) | The library compiled to WebAssembly, for web pages |
 
@@ -16,7 +16,7 @@ assert_eq!(lin::from_str(&text)?, v);
 ```
 
 `lin::Value` keeps key order and exact numbers. Files whose header names a schema are read with
-`lin::from_str_with_schema`, which checks the schema's hash; enable the `serde_json` feature for
+`lin::from_str_with_schema`, which checks the schema against the header's id; enable the `serde_json` feature for
 conversions to and from `serde_json::Value`.
 
 ```bash

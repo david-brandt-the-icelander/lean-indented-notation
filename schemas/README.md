@@ -1,24 +1,27 @@
-# The default LIN schema registry
+# The official LIN schema registry
 
-This directory is the default public content-addressed registry for LIN schemas (see
-[spec/registry.md](../spec/registry.md)). Each schema is here twice, as `<hash>.lin` and
-`<hash>.json`, named by its content address; [`index.lin`](index.lin) lists them.
+This directory is the official registry for LIN schemas (see
+[spec/registry.md](../spec/registry.md)). Each schema is here twice, as
+`<provisional id>.lin` and `<provisional id>.json`. [`index.lin`](index.lin) lists them all with
+their provisional ids and full SHA-256, and records every registered number: it is the authority
+for numbers.
 
-| Hash | Schema |
-| --- | --- |
-| `sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars` | The LIN meta-schema: JSON Schema 2020-12 (`https://json-schema.org/draft/2020-12/schema`) |
-| `sha256-rYIVMHECYTpbxewIO3m7cFkmdJ164g7AapUNzu_3tz4` | 2020-12 core vocabulary |
-| `sha256-may8pJYoFfev-pvC-3PaZNeciE0ilp0gMjmzAtarwVs` | 2020-12 applicator vocabulary |
-| `sha256-TLdSXoAYb-3G_UCkjHTr-SG6ULKAmHpRxT-zcDgJWBw` | 2020-12 unevaluated vocabulary |
-| `sha256-nC5JxRGEktjjr7tWjih33KajTKPKi99pPu4ONQco-DM` | 2020-12 validation vocabulary |
-| `sha256-0cao2J2xjwekmN8WdCyjZf2mdr44gIgw8Lc42LncE2A` | 2020-12 meta-data vocabulary |
-| `sha256-giK6XQfewAlGPLo0Xo6ZhAAcU5LCa15lcEbwuF2MgrU` | 2020-12 format-annotation vocabulary |
-| `sha256-tLngpb9Ypy0MzWztLD0UK0VgfinH3QTSRRVVvFLYZYg` | 2020-12 content vocabulary |
-| `sha256-GNvQTexeyzKBidPglSpH44StGNk1FBL1sWQD2cKVZA0` | The schema of [`registries.lin`](../registries.lin) |
+| Number | Provisional id | Schema |
+| --- | --- | --- |
+| 1 | `257594055969365195939657195617727395759` | The LIN meta-schema: JSON Schema 2020-12 |
+| 2 | `124342915454511122437553197701222413100` | The schema of [`registries.lin`](../registries.lin) |
+| 3 | `269085630653286729508730126105558559404` | The schema of `index.lin` |
+| ~ | `230631871630928134081358861136639409008` | 2020-12 core vocabulary |
+| ~ | `204268784547655470004489683923042032228` | 2020-12 applicator vocabulary |
+| ~ | `101973188649443879620232466638130441209` | 2020-12 unevaluated vocabulary |
+| ~ | `207599909227210076967483512369187420124` | 2020-12 validation vocabulary |
+| ~ | `278840150503937631720490556150644515685` | 2020-12 meta-data vocabulary |
+| ~ | `172979957444070324120297600708435155332` | 2020-12 format-annotation vocabulary |
+| ~ | `240226170551730644875985711096481518635` | 2020-12 content vocabulary |
 
-Readers fetch `https://raw.githubusercontent.com/david-brandt-the-icelander/lean-indented-notation/main/schemas/<hash>.lin`
-and check the hash of what they get. Never edit a file here: a changed schema has a new hash. Add one
-with `lin schema publish <file> --dir schemas`.
+Never edit a schema file here: a changed schema has a new provisional id, so it is a new file. Never
+change or reuse a number. Add a schema with `lin schema publish <file> --dir schemas`, and give it a
+number with `lin schema register <file> --dir schemas`; both update `index.lin`.
 
 The eight JSON Schema 2020-12 meta-schemas were converted from json-schema.org and read back to
 identical data; they remain the JSON Schema project's work, under its licence terms.

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
-import { LinError, jsonToLin, linToJson, schemaHash } from "../src/index.js";
+import { LinError, jsonToLin, linToJson, schemaId } from "../src/index.js";
 const lin_error = (e: unknown) => e instanceof LinError;
 
 const suite = join(process.cwd(), "..", "tests", "conformance");
@@ -31,20 +31,20 @@ test("invalid LIN is rejected", () => {
 test("schema typing", () => {
   const schemaText = read(ls("schemas", ".json")[0]);
   const schema = JSON.parse(schemaText);
-  const hash = schemaHash(schema);
+  const hash = schemaId(schema);
   assert.ok(ls("schemas", ".json")[0].includes(hash));
   for (const p of ls("schema", ".lin")) {
     const want = read(p.replace(/\.lin$/, ".json"));
     assert.equal(linToJson(read(p), { schema }), want, p);
     assert.throws(() => linToJson(read(p)), /names schema/);
     const split = p.endsWith(".split.lin");
-    assert.equal(jsonToLin(want, { schema, schemaHash: hash, split, splitLimit: split ? 5 : 24 }), read(p), p + " (write)");
+    assert.equal(jsonToLin(want, { schema, schemaId: p.includes(".registered.") ? "4242" : hash, split, splitLimit: split ? 5 : 24 }), read(p), p + " (write)");
   }
 });
 
 test("published schemas hash to their names", () => {
   const dir = join(process.cwd(), "..", "schemas");
-  for (const f of readdirSync(dir).filter((f) => f.startsWith("sha256-") && f.endsWith(".json"))) {
-    assert.equal(schemaHash(JSON.parse(read(join(dir, f)))) + ".json", f);
+  for (const f of readdirSync(dir).filter((f) => /^[0-9]{39}\.json$/.test(f))) {
+    assert.equal(schemaId(JSON.parse(read(join(dir, f)))) + ".json", f);
   }
 });

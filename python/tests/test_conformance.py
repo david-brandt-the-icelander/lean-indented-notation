@@ -43,7 +43,7 @@ class Conformance(unittest.TestCase):
 
     def test_schema(self):
         schema = lin.from_json(read(files('schemas', '.json')[0]))
-        h = lin.schema_hash(schema)
+        h = lin.schema_id(schema)
         for p in files('schema', '.lin'):
             want = read(p[:-4] + '.json')
             with self.subTest(p):
@@ -51,12 +51,29 @@ class Conformance(unittest.TestCase):
                 with self.assertRaises(lin.SchemaRequired):
                     lin.loads(read(p))
                 split = p.endswith('.split.lin')
-                got = lin.json_to_lin(want, schema=h, schema_doc=schema, split=split, split_limit=5 if split else 24)
+                sid = '4242' if '.registered.' in p else h
+                got = lin.json_to_lin(want, schema=sid, schema_doc=schema, split=split, split_limit=5 if split else 24)
                 self.assertEqual(got, read(p))
 
     def test_published_schemas(self):
-        for p in glob.glob(os.path.join(SCHEMAS, 'sha256-*.json')):
-            self.assertEqual(lin.schema_hash(lin.from_json(read(p))) + '.json', os.path.basename(p))
+        # each schema file is named by its provisional id
+        for p in glob.glob(os.path.join(SCHEMAS, '[0-9]*.json')):
+            self.assertEqual(lin.schema_id(lin.from_json(read(p))) + '.json', os.path.basename(p))
+
+    def test_ids(self):
+        self.assertEqual(lin.schema_id({}), lin.schema_id({}))
+        self.assertEqual(len(lin.schema_id({'type': 'object'})), 39)
+        self.assertEqual(lin.schema_id_kind('1'), 'registered')
+        self.assertIsNone(lin.schema_id_kind('0123'))
+        h = lin.schema_id({'type': 'object'})
+        self.assertEqual(lin.dumps({'a': 1}, schema=h, url='https://x.org/s'), f'LIN 1 {h} https://x.org/s\na 1\n')
+        with self.assertRaises(ValueError):
+            lin.dumps({'a': 1}, schema='7', url='https://x.org/s')
+        text = 'LIN 1 7\na 1\n'
+        self.assertEqual(lin.loads(text, {'type': 'object'}), {'a': 1})
+        with self.assertRaises(lin.LinError):
+            lin.loads(text, {'type': 'object'}, sha256='0' * 64)
+        self.assertEqual(lin.loads(text, {'type': 'object'}, sha256=lin.schema_sha256({'type': 'object'})), {'a': 1})
 
 
 class Api(unittest.TestCase):
@@ -82,7 +99,7 @@ class Api(unittest.TestCase):
         self.assertEqual(lin.dumps_fragment('1'), '"1"\n')
 
     def test_ignore_schema(self):
-        h = lin.schema_hash({'type': 'object'})
+        h = lin.schema_id({'type': 'object'})
         text = f'LIN 1 {h}\na 1\n'
         self.assertEqual(lin.loads(text, ignore_schema=True), {'a': 1})
         self.assertEqual(lin.loads(text, {'type': 'object'}), {'a': 1})

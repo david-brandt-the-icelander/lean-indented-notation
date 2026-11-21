@@ -1,0 +1,22 @@
+LIN 1 4242
+version 1.0
+count 3
+flag true
+either "20"
+label true
+items[] 1|x|false
+pair[] 2|3
+rows[code|n]
+ 007|1
+ 1.5|2.5
+enumed 1
+any "5"
+all 12
+one 3
+map
+ a 1
+ b true
+pat
+ s_x 9
+ n_x 9
+note 12345678901234567890123456789

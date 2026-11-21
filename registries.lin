@@ -1,5 +1,6 @@
-LIN 1 sha256-GNvQTexeyzKBidPglSpH44StGNk1FBL1sWQD2cKVZA0 https://raw.githubusercontent.com/david-brandt-the-icelander/lean-indented-notation/main/schemas/sha256-GNvQTexeyzKBidPglSpH44StGNk1FBL1sWQD2cKVZA0.lin
+LIN 1 2
 registries
 + name lin
  prefix https://raw.githubusercontent.com/david-brandt-the-icelander/lean-indented-notation/main/schemas/
- description The default registry: the schemas/ directory of the LIN repository on GitHub
+ official true
+ description The official registry: the schemas/ directory of the LIN repository on GitHub. It assigns registered numbers.

@@ -6,12 +6,12 @@
     {'name': 'demo', 'tags': ['a', 'b']}
 """
 from .core import (DEFAULT_OBJECT_LIMIT, DEFAULT_SPLIT_LIMIT, VERSION, LinError, SchemaRequired,
-                   dumps, dumps_fragment, loads, num, parse, read_header_of, resolve)
-from .jcs import canonicalize, schema_hash
+                   dumps, dumps_fragment, loads, num, parse, read_header_of, resolve, schema_id_kind)
+from .jcs import canonicalize, schema_id, schema_sha256
 from .jsonio import from_json, to_json
 
 __all__ = ['VERSION', 'LinError', 'SchemaRequired', 'loads', 'dumps', 'dumps_fragment', 'parse', 'resolve',
-           'read_header_of', 'num', 'canonicalize', 'schema_hash', 'from_json', 'to_json',
+           'read_header_of', 'num', 'canonicalize', 'schema_id', 'schema_sha256', 'schema_id_kind', 'from_json', 'to_json',
            'lin_to_json', 'json_to_lin', 'DEFAULT_SPLIT_LIMIT', 'DEFAULT_OBJECT_LIMIT']
 __version__ = '1.0.0'
 

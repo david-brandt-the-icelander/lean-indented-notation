@@ -12,12 +12,12 @@ lin.loads(text)                                           # {'name': 'demo', 'ta
 lin.dumps(doc, split=True)              # split form: long values after ---
 lin.lin_to_json(text)                   # LIN text to 2-space-indented JSON text
 lin.json_to_lin(json_text)              # JSON text to LIN text
-lin.schema_hash(schema)                 # 'sha256-…', the content address for a header
+lin.schema_id(schema)                   # its 39-digit provisional id, for a header
 ```
 
-A file whose header names a schema is typed by it: `lin.loads(text, schema)` checks the schema's hash
-against the header; `lin.loads(text, ignore_schema=True)` reads it by the schema-less rules instead.
-Write with `lin.dumps(doc, schema=hash, schema_doc=schema)` to name the schema and let strings that
+A file whose header names a schema is typed by it: `lin.loads(text, schema)` checks a provisional id
+against the schema (and a registered number too, given `sha256=` from the registry's index); `lin.loads(text, ignore_schema=True)` reads it by the schema-less rules instead.
+Write with `lin.dumps(doc, schema=id, schema_doc=schema)` to name the schema and let strings that
 look like numbers go bare where the schema says they are strings.
 
 Errors are `lin.LinError`, with `.line` set when the line is known.

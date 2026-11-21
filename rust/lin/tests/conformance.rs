@@ -3,7 +3,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use lin::{json, schema_hash, ReadOptions, WriteOptions};
+use lin::{json, schema_id, ReadOptions, WriteOptions};
 
 fn suite() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../../tests/conformance")
@@ -70,7 +70,7 @@ fn invalid_cases() {
 fn schema_cases() {
     let schemas = files("schemas", ".json");
     let schema = json::parse(&read(&schemas[0])).unwrap();
-    let h = schema_hash(&schema);
+    let h = schema_id(&schema);
     assert!(schemas[0].to_string_lossy().contains(&h));
     for p in files("schema", ".lin") {
         let text = read(&p);
@@ -85,7 +85,11 @@ fn schema_cases() {
         let opts = WriteOptions {
             split,
             split_limit: if split { 5 } else { 24 },
-            schema: Some(h.clone()),
+            schema: Some(if p.to_string_lossy().contains(".registered.") {
+                "4242".into()
+            } else {
+                h.clone()
+            }),
             ..Default::default()
         };
         assert_eq!(
@@ -102,9 +106,9 @@ fn hashes_of_published_schemas() {
     for e in fs::read_dir(dir).unwrap() {
         let p = e.unwrap().path();
         let name = p.file_name().unwrap().to_string_lossy().to_string();
-        if name.starts_with("sha256-") && name.ends_with(".json") {
+        if name.len() == 44 && name.ends_with(".json") {
             let v = json::parse(&read(&p)).unwrap();
-            assert_eq!(format!("{}.json", schema_hash(&v)), name);
+            assert_eq!(format!("{}.json", schema_id(&v)), name);
         }
     }
 }

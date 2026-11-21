@@ -25,13 +25,13 @@ for (const p of ls("invalid", ".lin")) {
   eq(ok, true, p + " must be rejected");
 }
 const schema = read(ls("schemas", ".json")[0]);
-const hash = lin.schemaHash(schema);
+const hash = lin.schemaId(schema);
 for (const p of ls("schema", ".lin")) {
   eq(lin.linToJson(read(p), schema), read(p.replace(/\.lin$/, ".json")), p);
   const o = new lin.Options();
   o.split = p.endsWith(".split.lin");
   if (o.split) o.splitLimit = 5;
-  o.schema = hash;
+  o.schema = p.includes(".registered.") ? "4242" : hash;
   eq(lin.jsonToLin(read(p.replace(/\.lin$/, ".json")), o, schema), read(p), p + " (write)");
 }
 console.log(`wasm conformance: ${n} checks passed`);

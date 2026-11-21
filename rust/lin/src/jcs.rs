@@ -1,6 +1,5 @@
-//! RFC 8785 JSON Canonicalization and LIN schema hashes (spec section 7).
+//! RFC 8785 JSON Canonicalization and LIN schema ids (spec section 7).
 
-use base64::Engine;
 use sha2::{Digest, Sha256};
 
 use crate::json::quote;
@@ -50,20 +49,40 @@ fn canon(v: &Value, out: &mut String) {
     }
 }
 
-/// `sha256-` and the base64url (no padding) SHA-256 of the schema's canonical JSON.
-pub fn schema_hash(schema: &Value) -> String {
-    let digest = Sha256::digest(canonicalize(schema).as_bytes());
-    format!(
-        "sha256-{}",
-        base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(digest)
-    )
+/// The SHA-256 of the schema's canonical JSON, in hex: what a registry records.
+pub fn schema_sha256(schema: &Value) -> String {
+    Sha256::digest(canonicalize(schema).as_bytes())
+        .iter()
+        .map(|b| format!("{b:02x}"))
+        .collect()
 }
 
-/// Is `s` a schema hash as the header writes it?
-pub fn is_hash(s: &str) -> bool {
-    s.len() == 50
-        && s.starts_with("sha256-")
-        && s[7..]
-            .bytes()
-            .all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_')
+/// The schema's provisional id: the first 128 bits of its SHA-256 as a 39-digit decimal number.
+/// Digits are the cheapest text for tokenizers, which split them three at a time.
+pub fn schema_id(schema: &Value) -> String {
+    let d = Sha256::digest(canonicalize(schema).as_bytes());
+    let mut b = [0u8; 16];
+    b.copy_from_slice(&d[..16]);
+    format!("{:039}", u128::from_be_bytes(b))
+}
+
+/// The two forms of schema id a header can hold.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum IdKind {
+    /// A number (1 to 9 digits, no leading zero) assigned by the official registry.
+    Registered,
+    /// 39 digits: 128 bits of the schema's SHA-256.
+    Provisional,
+}
+
+/// What kind of schema id `s` is, if it is one.
+pub fn id_kind(s: &str) -> Option<IdKind> {
+    let digits = !s.is_empty() && s.bytes().all(|b| b.is_ascii_digit());
+    if digits && (1..=9).contains(&s.len()) && !s.starts_with('0') {
+        Some(IdKind::Registered)
+    } else if digits && s.len() == 39 {
+        Some(IdKind::Provisional)
+    } else {
+        None
+    }
 }

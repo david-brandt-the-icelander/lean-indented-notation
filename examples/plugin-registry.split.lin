@@ -1,4 +1,4 @@
-LIN 1 sha256-M804eExtUC7S2al_N82_CXtgd3ip0TT4ppYaSQtyHos https://schemas.example.org/plugin-registry.lin
+LIN 1 068856193987000667701029602040289804041 https://schemas.example.org/plugin-registry.lin
 name example-registry
 version 2.3.0
 description @

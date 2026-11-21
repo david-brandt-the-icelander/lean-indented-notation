@@ -13,7 +13,7 @@ use crate::Error;
 pub struct WriteOptions {
     /// Write the split form: long values move to a data section after `---`.
     pub split: bool,
-    /// The header's schema hash (`sha256-…`).
+    /// The header's schema id: a registered number, or a 39-digit provisional id.
     pub schema: Option<String>,
     /// An https:// location of the schema, written after the hash.
     pub url: Option<String>,
@@ -488,10 +488,11 @@ pub fn header_line(schema: Option<&str>, url: Option<&str>) -> Result<String, Er
     let mut h = String::from("LIN 1");
     match (schema, url) {
         (Some(s), u) => {
-            if !crate::jcs::is_hash(s) {
-                return Err(Error::new(
-                    "schema must be sha256- followed by 43 base64url characters",
-                ));
+            let kind = crate::jcs::id_kind(s).ok_or_else(|| {
+                Error::new("a schema id is a registered number (1 to 9 digits) or a 39-digit provisional id")
+            })?;
+            if u.is_some() && kind != crate::jcs::IdKind::Provisional {
+                return Err(Error::new("a url may follow only a provisional schema id"));
             }
             h.push(' ');
             h.push_str(s);
@@ -505,7 +506,7 @@ pub fn header_line(schema: Option<&str>, url: Option<&str>) -> Result<String, Er
                 h.push_str(u);
             }
         }
-        (None, Some(_)) => return Err(Error::new("a url needs a schema hash before it")),
+        (None, Some(_)) => return Err(Error::new("a url needs a schema id before it")),
         (None, None) => {}
     }
     Ok(h)

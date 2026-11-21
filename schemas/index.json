@@ -1,49 +1,74 @@
 {
   "schemas": [
     {
-      "hash": "sha256-0cao2J2xjwekmN8WdCyjZf2mdr44gIgw8Lc42LncE2A",
-      "id": "https://json-schema.org/draft/2020-12/meta/meta-data",
-      "title": "Meta-data vocabulary meta-schema"
+      "number": 1,
+      "provisional": "257594055969365195939657195617727395759",
+      "sha256": "c1cacf82bea665da4dbaf58eb341b7af39420d4c9248a012aba3436ef1f802bb",
+      "id": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Core and Validation specifications meta-schema"
     },
     {
-      "hash": "sha256-GNvQTexeyzKBidPglSpH44StGNk1FBL1sWQD2cKVZA0",
+      "number": 2,
+      "provisional": "124342915454511122437553197701222413100",
+      "sha256": "5d8b930d7e03d782c6cf8d103ce0b32c40b8499563a24cb011c945fb6af62630",
       "id": "https://github.com/david-brandt-the-icelander/lean-indented-notation/registries",
       "title": "LIN schema registries"
     },
     {
-      "hash": "sha256-TLdSXoAYb-3G_UCkjHTr-SG6ULKAmHpRxT-zcDgJWBw",
+      "number": 3,
+      "provisional": "269085630653286729508730126105558559404",
+      "sha256": "ca7001e2ddab7a3619a73c3b611eaaac98830a6a41e85e99dfad6ae5a98494fb",
+      "id": "https://github.com/david-brandt-the-icelander/lean-indented-notation/registry-index",
+      "title": "LIN schema registry index"
+    },
+    {
+      "number": null,
+      "provisional": "101973188649443879620232466638130441209",
+      "sha256": "4cb7525e80186fedc6fd40a48c74ebf921ba50b280987a51c53fb3703809581c",
       "id": "https://json-schema.org/draft/2020-12/meta/unevaluated",
       "title": "Unevaluated applicator vocabulary meta-schema"
     },
     {
-      "hash": "sha256-giK6XQfewAlGPLo0Xo6ZhAAcU5LCa15lcEbwuF2MgrU",
+      "number": null,
+      "provisional": "172979957444070324120297600708435155332",
+      "sha256": "8222ba5d07dec009463cba345e8e9984001c5392c26b5e657046f0b85d8c82b5",
       "id": "https://json-schema.org/draft/2020-12/meta/format-annotation",
       "title": "Format vocabulary meta-schema for annotation results"
     },
     {
-      "hash": "sha256-may8pJYoFfev-pvC-3PaZNeciE0ilp0gMjmzAtarwVs",
+      "number": null,
+      "provisional": "204268784547655470004489683923042032228",
+      "sha256": "99acbca4962815f7affa9bc2fb73da64d79c884d22969d203239b302d6abc15b",
       "id": "https://json-schema.org/draft/2020-12/meta/applicator",
       "title": "Applicator vocabulary meta-schema"
     },
     {
-      "hash": "sha256-nC5JxRGEktjjr7tWjih33KajTKPKi99pPu4ONQco-DM",
+      "number": null,
+      "provisional": "207599909227210076967483512369187420124",
+      "sha256": "9c2e49c5118492d8e3afbb568e2877dca6a34ca3ca8bdf693eee0e350728f833",
       "id": "https://json-schema.org/draft/2020-12/meta/validation",
       "title": "Validation vocabulary meta-schema"
     },
     {
-      "hash": "sha256-rYIVMHECYTpbxewIO3m7cFkmdJ164g7AapUNzu_3tz4",
+      "number": null,
+      "provisional": "230631871630928134081358861136639409008",
+      "sha256": "ad8215307102613a5bc5ec083b79bb705926749d7ae20ec06a950dceeff7b73e",
       "id": "https://json-schema.org/draft/2020-12/meta/core",
       "title": "Core vocabulary meta-schema"
     },
     {
-      "hash": "sha256-tLngpb9Ypy0MzWztLD0UK0VgfinH3QTSRRVVvFLYZYg",
+      "number": null,
+      "provisional": "240226170551730644875985711096481518635",
+      "sha256": "b4b9e0a5bf58a72d0ccd6ced2c3d142b45607e29c7dd04d2451555bc52d86588",
       "id": "https://json-schema.org/draft/2020-12/meta/content",
       "title": "Content vocabulary meta-schema"
     },
     {
-      "hash": "sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars",
-      "id": "https://json-schema.org/draft/2020-12/schema",
-      "title": "Core and Validation specifications meta-schema"
+      "number": null,
+      "provisional": "278840150503937631720490556150644515685",
+      "sha256": "d1c6a8d89db18f07a498df16742ca365fda676be38808830f0b738d8b9dc1360",
+      "id": "https://json-schema.org/draft/2020-12/meta/meta-data",
+      "title": "Meta-data vocabulary meta-schema"
     }
   ]
 }

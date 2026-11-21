@@ -1,4 +1,4 @@
-// RFC 8785 JSON Canonicalization and LIN schema hashes (spec section 7).
+// RFC 8785 JSON Canonicalization and LIN schema ids (spec section 7).
 
 import { Node, fromJs } from "./node.js";
 import { quote } from "./text.js";
@@ -35,13 +35,25 @@ function canon(n: Node): string {
   }
 }
 
-/** sha256- and the base64url SHA-256 of the schema's canonical JSON. */
-export function schemaHash(schema: unknown): string {
-  return "sha256-" + base64url(sha256(utf8(canonicalize(schema))));
+/** The SHA-256 of the schema's canonical JSON, in hex: what a registry records. */
+export function schemaSha256(schema: unknown): string {
+  return [...sha256(utf8(canonicalize(schema)))].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-export function isHash(s: string): boolean {
-  return /^sha256-[A-Za-z0-9_-]{43}$/.test(s);
+/** The schema's provisional id: the first 128 bits of its SHA-256 as a 39-digit decimal number.
+ * Digits are the cheapest text for tokenizers, which split them three at a time. */
+export function schemaId(schema: unknown): string {
+  const d = sha256(utf8(canonicalize(schema)));
+  let n = BigInt(0);
+  for (let i = 0; i < 16; i++) n = (n << BigInt(8)) | BigInt(d[i]);
+  return n.toString().padStart(39, "0");
+}
+
+/** "registered" (1 to 9 digits, no leading zero), "provisional" (39 digits) or null. */
+export function idKind(s: string): "registered" | "provisional" | null {
+  if (/^[1-9][0-9]{0,8}$/.test(s)) return "registered";
+  if (/^[0-9]{39}$/.test(s)) return "provisional";
+  return null;
 }
 
 function utf8(s: string): Uint8Array {
@@ -54,18 +66,6 @@ function utf8(s: string): Uint8Array {
     else out.push(0xf0 | (x >> 18), 0x80 | ((x >> 12) & 63), 0x80 | ((x >> 6) & 63), 0x80 | (x & 63));
   }
   return new Uint8Array(out);
-}
-
-function base64url(b: Uint8Array): string {
-  const A = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-  let out = "";
-  for (let i = 0; i < b.length; i += 3) {
-    const n = (b[i] << 16) | ((b[i + 1] ?? 0) << 8) | (b[i + 2] ?? 0);
-    out += A[(n >> 18) & 63] + A[(n >> 12) & 63];
-    if (i + 1 < b.length) out += A[(n >> 6) & 63];
-    if (i + 2 < b.length) out += A[n & 63];
-  }
-  return out;
 }
 
 const K = new Uint32Array([

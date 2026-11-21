@@ -66,8 +66,12 @@ INVALID = {
     'no-header': 'a 1\n',
     'wrong-version': 'LIN 2\na 1\n',
     'header-junk': 'LIN 1 x\n',
-    'header-short-hash': 'LIN 1 sha256-abc\n',
-    'header-http-url': 'LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars http://x.org/s\n',
+    'header-id-length': 'LIN 1 12345678901234567890\n',
+    'header-id-leading-zero': 'LIN 1 0123\n',
+    'header-id-letters': 'LIN 1 4a2\n',
+    'header-old-sha256-form': 'LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars\n',
+    'header-url-after-number': 'LIN 1 7 https://x.org/s\n',
+    'header-http-url': 'LIN 1 000123456789012345678901234567890123456 http://x.org/s\n',
     'header-url-without-hash': 'LIN 1 https://x.org/s\n',
     'empty-file': '',
     'bom': '\ufeffLIN 1\na 1\n',
@@ -161,7 +165,7 @@ def main():
         },
         '$defs': {'label': {'type': 'string'}},
     }
-    h = lin.schema_hash(schema)
+    h = lin.schema_id(schema)
     write(os.path.join(HERE, 'schemas', h + '.lin'), lin.dumps(schema, schema=META))
     write(os.path.join(HERE, 'schemas', h + '.json'), lin.to_json(schema))
     doc = {'version': '1.0', 'count': 3, 'flag': True, 'either': '20', 'label': 'true', 'items': ['1', 'x', 'false'],
@@ -176,10 +180,23 @@ def main():
     assert lin.loads(split, schema) == doc
     write(os.path.join(HERE, 'schema', 'typed.split.lin'), split)
     write(os.path.join(HERE, 'schema', 'typed.split.json'), lin.to_json(doc))
-    print(f'{len(CASES)} write cases, {len(READ)} read cases, {len(INVALID)} invalid cases, 1 schema case')
+    # the same data under a registered number, which this store's index registers as a fixture
+    reg_index = json.load(open(os.path.join(HERE, '..', '..', 'schemas', 'index.json')))
+    index_schema_id = next(r['provisional'] for r in reg_index['schemas'] if r['number'] == 3)
+    index_schema = json.load(open(os.path.join(HERE, '..', '..', 'schemas', index_schema_id + '.json')))
+    idx = {'schemas': [{'number': int(REGISTERED), 'provisional': h, 'sha256': lin.schema_sha256(schema),
+                        'id': None, 'title': 'Conformance-suite test schema (a fixture, not a real registration)'}]}
+    write(os.path.join(HERE, 'schemas', 'index.lin'), lin.dumps(idx, schema='3', schema_doc=index_schema))
+    write(os.path.join(HERE, 'schemas', 'index.json'), lin.to_json(idx))
+    reg = lin.dumps(doc, schema=REGISTERED, schema_doc=schema)
+    assert lin.loads(reg, schema) == doc
+    write(os.path.join(HERE, 'schema', 'typed.registered.lin'), reg)
+    write(os.path.join(HERE, 'schema', 'typed.registered.json'), lin.to_json(doc))
+    print(f'{len(CASES)} write cases, {len(READ)} read cases, {len(INVALID)} invalid cases, 3 schema cases')
 
 
-META = 'sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars'
+META = '1'  # the LIN meta-schema's registered number
+REGISTERED = '4242'
 
 if __name__ == '__main__':
     main()

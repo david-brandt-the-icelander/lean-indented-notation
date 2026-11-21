@@ -56,7 +56,7 @@ fn convert_both_ways() {
             "from-json",
             "plugin-registry.json",
             "--schema",
-            "schemas/sha256-M804eExtUC7S2al_N82_CXtgd3ip0TT4ppYaSQtyHos.lin",
+            "schemas/068856193987000667701029602040289804041.lin",
             "--url",
             "https://schemas.example.org/plugin-registry.lin",
         ],
@@ -221,40 +221,60 @@ fn schemas_and_hashes() {
         &d,
         &[
             "hash",
-            "schemas/sha256-M804eExtUC7S2al_N82_CXtgd3ip0TT4ppYaSQtyHos.json",
+            "schemas/068856193987000667701029602040289804041.json",
         ],
     );
-    assert_eq!(
-        h.trim(),
-        "sha256-M804eExtUC7S2al_N82_CXtgd3ip0TT4ppYaSQtyHos"
-    );
+    assert_eq!(h.trim(), "068856193987000667701029602040289804041");
     let (c, out, e) = lin(&d, &["check", "."]);
     assert_eq!(c, 0, "{out}{e}");
     let (_, s, _) = lin(&d, &["schema", "infer", "plugin-registry.json"]);
-    assert!(s.starts_with("LIN 1 sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars\n$schema "));
+    assert!(s.starts_with("LIN 1 1\n$schema "));
     fs::write(d.join("inferred.lin"), &s).unwrap();
     let (c, h, _) = lin(&d, &["schema", "publish", "inferred.lin", "--dir", "store"]);
     assert_eq!(c, 0);
     assert!(d.join("store").join(format!("{}.lin", h.trim())).exists());
     assert!(d.join("store/index.lin").exists());
+    // registering gives the next number; upgrading rewrites headers that use the provisional id
+    let (c, n, e) = lin(
+        &d,
+        &["schema", "register", "inferred.lin", "--dir", "store"],
+    );
+    assert_eq!((c, n.trim()), (0, "1"), "{e}");
+    let (_, again, _) = lin(
+        &d,
+        &["schema", "register", "inferred.lin", "--dir", "store"],
+    );
+    assert_eq!(again.trim(), "1", "registering twice keeps the number");
+    fs::write(
+        d.join("store/data.lin"),
+        format!("LIN 1 {} https://x.org/s\nname demo\n", h.trim()),
+    )
+    .unwrap();
+    let (c, _, _) = lin(&d, &["--offline", "schema", "upgrade", "--check", "store"]);
+    assert_eq!(c, 1);
+    lin(&d, &["--offline", "schema", "upgrade", "store"]);
+    assert_eq!(
+        fs::read_to_string(d.join("store/data.lin")).unwrap(),
+        "LIN 1 1\nname demo\n"
+    );
+    let (c, out, e) = lin(&d, &["--offline", "to-json", "store/data.lin"]);
+    assert_eq!(c, 0, "{e}");
+    assert!(out.contains("demo"));
+    fs::remove_dir_all(d.join("store")).unwrap();
     let (c, _, e) = lin(&d, &["--offline", "to-json", "plugin-registry.lin"]);
     assert_eq!(c, 0, "{e}");
     fs::remove_dir_all(d.join("schemas")).unwrap();
     let (c, _, e) = lin(&d, &["--offline", "to-json", "plugin-registry.lin"]);
     assert_eq!(c, 2);
     assert!(e.contains("could not be found"));
+    // views fall back to the schema-less rules with a note
+    let (c, out, e) = lin(&d, &["--offline", "outline", "plugin-registry.lin"]);
+    assert_eq!(c, 0);
+    assert!(out.starts_with("name\n") && e.contains("schema-less"));
     let (c, _, _) = lin(&d, &["--no-schema", "to-json", "plugin-registry.lin"]);
     assert_eq!(c, 0);
     // the meta-schema is built in
-    let (c, out, e) = lin(
-        &d,
-        &[
-            "--offline",
-            "schema",
-            "get",
-            "sha256-wcrPgr6mZdpNuvWOs0G3rzlCDUySSKASq6NDbvH4Ars",
-        ],
-    );
+    let (c, out, e) = lin(&d, &["--offline", "schema", "get", "1"]);
     assert_eq!(c, 0, "{e}");
     assert!(out.contains("$dynamicAnchor meta"));
 }

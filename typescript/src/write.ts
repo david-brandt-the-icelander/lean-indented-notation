@@ -1,6 +1,6 @@
 // The LIN writer. Its output is byte-for-byte the same as the Python and Rust writers'.
 
-import { isHash } from "./jcs.js";
+import { idKind } from "./jcs.js";
 import { LinError, Node, isIntegerText, isJsonNumber } from "./node.js";
 import { Pos, Typer, bareReadsAsString } from "./schema.js";
 import { badChar, bareKeyOk, clen, quote, segOk } from "./text.js";
@@ -8,8 +8,8 @@ import { badChar, bareKeyOk, clen, quote, segOk } from "./text.js";
 export interface WriteOptions {
   /** Write the split form: long values move to a data section after `---`. */
   split?: boolean;
-  /** The header's schema hash (`sha256-…`). */
-  schemaHash?: string;
+  /** The header's schema id: a registered number, or a 39-digit provisional id. */
+  schemaId?: string;
   /** An https:// location of the schema, written after its hash. */
   url?: string;
   /** The schema itself: strings that look like numbers go bare where it says they are strings. */
@@ -306,13 +306,15 @@ function blockLines(s: string, ind: number, out: string[]): void {
 export function headerLine(schema?: string, url?: string): string {
   let h = "LIN 1";
   if (schema) {
-    if (!isHash(schema)) throw new LinError("schema must be sha256- followed by 43 base64url characters");
+    const kind = idKind(schema);
+    if (kind === null) throw new LinError("a schema id is a registered number (1 to 9 digits) or a 39-digit provisional id");
+    if (url && kind !== "provisional") throw new LinError("a url may follow only a provisional schema id");
     h += " " + schema;
     if (url) {
       if (!url.startsWith("https://") || url.includes(" ")) throw new LinError("schema url must start with https:// and have no spaces");
       h += " " + url;
     }
-  } else if (url) throw new LinError("a url needs a schema hash before it");
+  } else if (url) throw new LinError("a url needs a schema id before it");
   return h;
 }
 
@@ -325,7 +327,7 @@ export function writeNode(value: Node, o: WriteOptions = {}): string {
   let data: [string[], Node][] = [];
   if (o.split) [doc, data] = w.split(structuredCopy(doc));
   const lines: string[] = [];
-  if (o.header !== false) lines.push(headerLine(o.schemaHash, o.url));
+  if (o.header !== false) lines.push(headerLine(o.schemaId, o.url));
   w.body(doc, lines);
   if (data.length) {
     lines.push("---");

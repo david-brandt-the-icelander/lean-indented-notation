@@ -86,7 +86,7 @@ enum Cmd {
         file: Option<PathBuf>,
         #[command(flatten)]
         layout: Layout,
-        /// Name this schema in the header: a schema file (LIN or JSON) or a sha256- hash
+        /// Name this schema in the header: a schema file (LIN or JSON), a registered number or a provisional id
         #[arg(long)]
         schema: Option<String>,
         /// The https:// location of the schema, written after its hash
@@ -229,8 +229,13 @@ enum Cmd {
     },
     /// Show how two files' data differ, one line per change (+ added, - removed, ~ changed)
     Diff { a: PathBuf, b: PathBuf },
-    /// The normalized SHA-256 of a schema (or any data), for a LIN header
-    Hash { file: Option<PathBuf> },
+    /// A schema's provisional id (39 digits from its normalized SHA-256), for a LIN header
+    Hash {
+        file: Option<PathBuf>,
+        /// Print the full SHA-256 in hex instead, as a registry records it
+        #[arg(long)]
+        sha256: bool,
+    },
     /// Check files: syntax, MUST rules, schemas, hashes, and .lin/.json siblings
     Check {
         /// Files or directories [default: .]
@@ -298,24 +303,33 @@ enum SchemaCmd {
         #[command(flatten)]
         out: Out,
     },
-    /// Find a schema by hash (local stores, cache, registries) and print it
+    /// Find a schema by registered number or provisional id and print it
     Get {
-        hash: String,
+        id: String,
         #[command(flatten)]
         out: Out,
     },
-    /// Copy a schema into a content-addressed directory as <hash>.lin and <hash>.json
+    /// Add a schema to a registry directory as <provisional id>.lin and .json, listed in its index.lin
     Publish {
         file: PathBuf,
-        /// The store directory
+        /// The registry directory
         #[arg(long, default_value = "schemas")]
         dir: PathBuf,
     },
-    /// Rewrite index.lin (and index.json) of a schema store: one row per schema
-    Index {
-        /// The store directory
+    /// Publish a schema and give it the next registered number (in the official registry's checkout)
+    Register {
+        file: PathBuf,
+        /// The registry directory
         #[arg(long, default_value = "schemas")]
         dir: PathBuf,
+    },
+    /// Rewrite headers that name a provisional id which now has a registered number
+    Upgrade {
+        /// Files or directories [default: .]
+        paths: Vec<PathBuf>,
+        /// Change nothing; list the files that would change and exit 1 if there are any
+        #[arg(long)]
+        check: bool,
     },
     /// List the places schemas are looked up, in order
     Where { file: Option<PathBuf> },
@@ -391,11 +405,19 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
     let lo = LoadOptions {
         store,
         no_schema: cli.no_schema,
+        lenient: false,
     };
     let load = |p: Option<&Path>| doc::load(p, &lo);
+    // views only show data: if a schema cannot be found they read by the schema-less rules
+    let view_lo = LoadOptions {
+        store,
+        no_schema: cli.no_schema,
+        lenient: true,
+    };
+    let view = |p: Option<&Path>| doc::load(p, &view_lo);
     match cli.cmd {
         Cmd::Cat { file, layout } => {
-            let d = load(file.as_deref())?;
+            let d = view(file.as_deref())?;
             let opts = layout.options(layout.split, &d.header);
             print(
                 &lin::to_string_with(&d.value, &opts, d.schema.as_ref())
@@ -428,13 +450,19 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
             let d = load(file.as_deref())?;
             let (hash, schema_doc) = match schema {
                 None => (d.header.schema.clone(), d.schema.clone()),
-                Some(s) if lin::jcs::is_hash(&s) => {
+                Some(s) if lin::id_kind(&s).is_some() => {
                     let sd = store.get(&s, url.as_deref(), file.as_deref()).ok();
                     (Some(s), sd)
                 }
                 Some(s) => {
                     let sd = load(Some(Path::new(&s)))?.value;
-                    (Some(lin::schema_hash(&sd)), Some(sd))
+                    let prov = lin::schema_id(&sd);
+                    // a registered schema is named by its number
+                    let id = store
+                        .lookup_provisional(&prov, file.as_deref())
+                        .and_then(|e| e.number)
+                        .unwrap_or(prov);
+                    (Some(id), Some(sd))
                 }
             };
             let header = lin::Header {
@@ -483,7 +511,7 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
             });
         }
         Cmd::Outline { file, depth, types } => {
-            let d = load(file.as_deref())?;
+            let d = view(file.as_deref())?;
             print(&views::outline(&d.value, depth, types));
         }
         Cmd::Head { file } => {
@@ -513,7 +541,7 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
             }
         }
         Cmd::Get { file, name, out } => {
-            let d = load(Some(&file))?;
+            let d = view(Some(&file))?;
             let (_, v) = paths::lookup(&d.value, &name)?;
             print(&show(&v, &out));
         }
@@ -524,7 +552,7 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
                 if is_json_with_lin_sibling(&f) {
                     continue; // the .lin already lists it
                 }
-                if let Ok(d) = load(Some(&f)) {
+                if let Ok(d) = view(Some(&f)) {
                     for (p, id, title) in views::index(&d.value) {
                         let c = |x: &str| lin::write::string_form(x, true, false).unwrap();
                         s.push_str(&format!(
@@ -546,7 +574,7 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
             }
         }
         Cmd::Flat { file } => {
-            let d = load(file.as_deref())?;
+            let d = view(file.as_deref())?;
             print(&views::flat(&d.value));
         }
         Cmd::Unflat { file, out } => {
@@ -583,7 +611,7 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
                 if is_json_with_lin_sibling(&f) {
                     continue; // same data as the .lin beside it
                 }
-                let d = match load(Some(&f)) {
+                let d = match view(Some(&f)) {
                     Ok(d) => d,
                     Err(e) => {
                         eprintln!("lin: {e}");
@@ -636,11 +664,11 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
             let inputs: Vec<Value> = if null_input {
                 vec![Value::Null]
             } else if files.is_empty() {
-                vec![load(None)?.value]
+                vec![view(None)?.value]
             } else {
                 files
                     .iter()
-                    .map(|f| load(Some(f)).map(|d| d.value))
+                    .map(|f| view(Some(f)).map(|d| d.value))
                     .collect::<Res<_>>()?
             };
             let inputs = if slurp {
@@ -700,14 +728,14 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
         }
         Cmd::Merge { files, concat, out } => {
             let mut it = files.iter();
-            let mut v = load(Some(it.next().unwrap()))?.value;
+            let mut v = view(Some(it.next().unwrap()))?.value;
             for f in it {
-                edit::deep_merge(&mut v, &load(Some(f))?.value, concat);
+                edit::deep_merge(&mut v, &view(Some(f))?.value, concat);
             }
             print(&whole(&v, &out)?);
         }
         Cmd::Diff { a, b } => {
-            let (x, y) = (load(Some(&a))?.value, load(Some(&b))?.value);
+            let (x, y) = (view(Some(&a))?.value, view(Some(&b))?.value);
             let lines = views::diff(&x, &y);
             let mut s = String::new();
             for l in &lines {
@@ -721,9 +749,13 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
                 ExitCode::from(1)
             });
         }
-        Cmd::Hash { file } => {
+        Cmd::Hash { file, sha256 } => {
             let d = load(file.as_deref())?;
-            println!("{}", lin::schema_hash(&d.value));
+            if sha256 {
+                println!("{}", lin::schema_sha256(&d.value));
+            } else {
+                println!("{}", lin::schema_id(&d.value));
+            }
         }
         Cmd::Check {
             paths: ps,
@@ -817,8 +849,8 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
                     print(&schema_text(&s, store)?);
                 }
             }
-            SchemaCmd::Get { hash, out } => {
-                let v = store.get(&hash, None, None)?;
+            SchemaCmd::Get { id, out } => {
+                let v = store.get(&id, None, None)?;
                 if out.json {
                     print(&show(&v, &out));
                 } else {
@@ -827,20 +859,46 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
             }
             SchemaCmd::Publish { file, dir } => {
                 let d = load(Some(&file))?;
-                let h = lin::schema_hash(&d.value);
-                std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
-                doc::write_file(
-                    &dir.join(format!("{h}.lin")),
-                    &schema_text(&d.value, store)?,
-                )?;
-                doc::write_file(
-                    &dir.join(format!("{h}.json")),
-                    &json::to_string_pretty(&d.value),
-                )?;
-                write_index(&dir, store)?;
-                println!("{h}");
+                let e = publish(&dir, &d.value, false, store)?;
+                println!("{}", e.number.unwrap_or(e.provisional));
             }
-            SchemaCmd::Index { dir } => write_index(&dir, store)?,
+            SchemaCmd::Register { file, dir } => {
+                let d = load(Some(&file))?;
+                let e = publish(&dir, &d.value, true, store)?;
+                println!("{}", e.number.unwrap_or(e.provisional));
+            }
+            SchemaCmd::Upgrade { paths: ps, check } => {
+                let ignore = repo::Ignore::load();
+                let mut n = 0;
+                for f in repo::files(&roots(ps), &[".lin"], &ignore) {
+                    let text = std::fs::read_to_string(&f).map_err(|e| e.to_string())?;
+                    let Ok(h) = lin::read_header(&text) else {
+                        continue;
+                    };
+                    let Some(id) = h.schema else { continue };
+                    if lin::id_kind(&id) != Some(lin::IdKind::Provisional) {
+                        continue;
+                    }
+                    let Some(number) = store
+                        .lookup_provisional(&id, Some(&f))
+                        .and_then(|e| e.number)
+                    else {
+                        continue;
+                    };
+                    n += 1;
+                    if check {
+                        println!("{}: {id} is registered as {number}", f.display());
+                        continue;
+                    }
+                    // the url only applies to provisional ids
+                    let rest = text.split_once('\n').map_or("", |(_, r)| r);
+                    doc::write_file(&f, &format!("LIN 1 {number}\n{rest}"))?;
+                    eprintln!("{}: now names schema {number}", f.display());
+                }
+                if check && n > 0 {
+                    return Ok(ExitCode::from(1));
+                }
+            }
             SchemaCmd::Where { file } => {
                 for d in store.local_dirs(file.as_deref()) {
                     println!("{}", d.display());
@@ -849,14 +907,19 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
                     "(built into lin: {} schemas)",
                     schemas::embedded_schemas().len()
                 );
-                println!("(the header's url, if it has one)");
-                for (name, prefix) in schemas::registries() {
-                    println!("{prefix}<hash>.lin  ({name})");
+                println!("(the header's url, for a provisional id)");
+                for r in schemas::registries() {
+                    let tag = if r.official {
+                        "official: assigns numbers"
+                    } else {
+                        "mirror"
+                    };
+                    println!("{}<provisional id>.lin  ({}, {tag})", r.prefix, r.name);
                 }
             }
         },
         Cmd::ToCsv { file, path } => {
-            let d = load(file.as_deref())?;
+            let d = view(file.as_deref())?;
             let p = paths::parse(path.as_deref().unwrap_or("."))?;
             let v = paths::get(&d.value, &p).ok_or("nothing at that path")?;
             print(&extra::to_csv(v)?);
@@ -870,7 +933,7 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
             let count = extra::token_counter()?;
             let mut s = String::from("[file|json|minified|lin|head|outline]\n");
             for f in files {
-                let v = load(Some(&f))?.value;
+                let v = view(Some(&f))?.value;
                 let plain = lin::to_string(&v).map_err(|e| e.to_string())?;
                 let split = lin::to_string_with(
                     &v,
@@ -898,51 +961,108 @@ fn run(cli: Cli, store: &Store) -> Res<ExitCode> {
     Ok(ExitCode::SUCCESS)
 }
 
-/// index.lin of a schema store: hash, $id and title of every schema in it.
-fn write_index(dir: &Path, store: &Store) -> Res<()> {
-    let mut rows = Vec::new();
-    let mut names: Vec<PathBuf> = std::fs::read_dir(dir)
-        .map_err(|e| e.to_string())?
-        .flatten()
-        .map(|e| e.path())
-        .collect();
-    names.sort();
-    for p in names {
-        let f = p.file_name().unwrap().to_string_lossy().to_string();
-        if !(f.starts_with("sha256-") && f.ends_with(".json")) {
-            continue;
-        }
-        let v = json::parse(&std::fs::read_to_string(&p).map_err(|e| e.to_string())?)
-            .map_err(|e| e.to_string())?;
-        let mut row = lin::Map::new();
-        row.insert(
-            "hash".into(),
-            Value::String(f.trim_end_matches(".json").into()),
-        );
-        row.insert("id".into(), v.get("$id").cloned().unwrap_or(Value::Null));
-        row.insert(
-            "title".into(),
-            v.get("title").cloned().unwrap_or(Value::Null),
-        );
-        rows.push(Value::Object(row));
-    }
-    let mut m = lin::Map::new();
-    m.insert("schemas".into(), Value::Array(rows));
-    let v = Value::Object(m);
+/// Write a schema into a registry directory and list it in the directory's index.lin; with
+/// `register`, give it the next number. Returns its index row.
+fn publish(dir: &Path, schema: &Value, register: bool, store: &Store) -> Res<schemas::Entry> {
+    std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
+    let prov = lin::schema_id(schema);
     doc::write_file(
-        &dir.join("index.lin"),
-        &lin::to_string(&v).map_err(|e| e.to_string())?,
+        &dir.join(format!("{prov}.lin")),
+        &schema_text(schema, store)?,
     )?;
-    doc::write_file(&dir.join("index.json"), &json::to_string_pretty(&v))?;
-    let _ = store;
+    doc::write_file(
+        &dir.join(format!("{prov}.json")),
+        &json::to_string_pretty(schema),
+    )?;
+    let idx = dir.join("index.lin");
+    let mut rows = std::fs::read_to_string(&idx)
+        .map(|t| schemas::parse_index(&t))
+        .unwrap_or_default();
+    let pos = match rows.iter().position(|e| e.provisional == prov) {
+        Some(p) => p,
+        None => {
+            rows.push(schemas::Entry {
+                number: None,
+                provisional: prov.clone(),
+                sha256: lin::schema_sha256(schema),
+                id: schema
+                    .get("$id")
+                    .and_then(Value::as_str)
+                    .map(str::to_string),
+                title: schema
+                    .get("title")
+                    .and_then(Value::as_str)
+                    .map(str::to_string),
+            });
+            rows.len() - 1
+        }
+    };
+    if register && rows[pos].number.is_none() {
+        let next = rows
+            .iter()
+            .filter_map(|e| e.number.as_ref()?.parse::<u64>().ok())
+            .max()
+            .unwrap_or(0)
+            + 1;
+        rows[pos].number = Some(next.to_string());
+    }
+    let entry = rows[pos].clone();
+    write_index(&idx, &rows, store)?;
+    Ok(entry)
+}
+
+/// index.lin (and its .json twin): registered schemas by number, then the others by id.
+fn write_index(idx: &Path, rows: &[schemas::Entry], store: &Store) -> Res<()> {
+    let mut rows = rows.to_vec();
+    rows.sort_by_key(|e| {
+        (
+            e.number
+                .as_ref()
+                .and_then(|n| n.parse::<u64>().ok())
+                .unwrap_or(u64::MAX),
+            e.provisional.clone(),
+        )
+    });
+    let opt = |o: &Option<String>| o.clone().map_or(Value::Null, Value::String);
+    let list: Vec<Value> = rows
+        .iter()
+        .map(|e| {
+            let mut m = lin::Map::new();
+            m.insert(
+                "number".into(),
+                e.number.as_ref().map_or(Value::Null, |n| {
+                    Value::Number(lin::Number::from_json_text(n).unwrap())
+                }),
+            );
+            m.insert("provisional".into(), Value::String(e.provisional.clone()));
+            m.insert("sha256".into(), Value::String(e.sha256.clone()));
+            m.insert("id".into(), opt(&e.id));
+            m.insert("title".into(), opt(&e.title));
+            Value::Object(m)
+        })
+        .collect();
+    let mut m = lin::Map::new();
+    m.insert("schemas".into(), Value::Array(list));
+    let v = Value::Object(m);
+    // the index is typed by its own registered schema, so provisional ids stay bare text
+    let schema = store.get(schemas::INDEX_SCHEMA, None, Some(idx)).ok();
+    let opts = WriteOptions {
+        schema: schema.as_ref().map(|_| schemas::INDEX_SCHEMA.to_string()),
+        ..Default::default()
+    };
+    doc::write_file(
+        idx,
+        &lin::to_string_with(&v, &opts, schema.as_ref()).map_err(|e| e.to_string())?,
+    )?;
+    doc::write_file(&idx.with_extension("json"), &json::to_string_pretty(&v))?;
     Ok(())
 }
 
 /// A schema written in LIN, its header naming the LIN meta-schema (JSON Schema 2020-12).
 fn schema_text(s: &Value, store: &Store) -> Res<String> {
-    let meta = store.get(extra::META, None, None).ok();
+    let meta = store.get(schemas::META, None, None).ok();
     let opts = WriteOptions {
-        schema: meta.as_ref().map(|_| extra::META.to_string()),
+        schema: meta.as_ref().map(|_| schemas::META.to_string()),
         ..Default::default()
     };
     lin::to_string_with(s, &opts, meta.as_ref()).map_err(|e| e.to_string())

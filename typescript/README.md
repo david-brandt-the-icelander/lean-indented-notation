@@ -11,7 +11,7 @@ lin.parse("LIN 1\nname demo\n");                    // { name: "demo" }
 lin.stringify(doc, { split: true });               // split form
 lin.linToJson(text);                                // LIN text to JSON text, keeping key order and digits
 lin.jsonToLin(jsonText);                            // JSON text to LIN text
-lin.schemaHash(schema);                             // "sha256-…"
+lin.schemaId(schema);                               // its 39-digit provisional id
 ```
 
 `parse` and `stringify` use plain JavaScript values and so share `JSON.parse`'s limits: integer-like

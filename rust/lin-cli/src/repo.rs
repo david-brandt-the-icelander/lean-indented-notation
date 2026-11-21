@@ -122,6 +122,7 @@ pub fn check_file(p: &Path, store: &Store, o: &CheckOptions) -> Vec<String> {
     let lo = LoadOptions {
         store,
         no_schema: o.no_schema,
+        lenient: false,
     };
     let d = match doc::load_text(text.clone(), Some(p), &lo) {
         Ok(d) => d,
@@ -140,14 +141,17 @@ pub fn check_file(p: &Path, store: &Store, o: &CheckOptions) -> Vec<String> {
         .file_name()
         .map(|f| f.to_string_lossy().to_string())
         .unwrap_or_default();
-    if file.starts_with("sha256-") {
-        let stem = file.trim_end_matches(".lin").trim_end_matches(".json");
-        let h = lin::schema_hash(&d.value);
+    let stem = file.trim_end_matches(".lin").trim_end_matches(".json");
+    if lin::id_kind(stem) == Some(lin::IdKind::Provisional) {
+        let h = lin::schema_id(&d.value);
         if h != stem {
             errs.push(format!(
-                "{name}: the file is named for {stem}, but its data hashes to {h}"
+                "{name}: the file is named for schema {stem}, but its data has id {h}"
             ));
         }
+    }
+    if file == "index.lin" {
+        errs.extend(check_index(p, &text));
     }
     if format == Format::Lin {
         if o.layout {
@@ -205,6 +209,7 @@ pub fn sync_file(
     let lo = LoadOptions {
         store,
         no_schema: false,
+        lenient: false,
     };
     let lin_doc = doc::load(Some(p), &lo)?;
     let want = json::to_string_pretty(&lin_doc.value);
@@ -260,4 +265,47 @@ pub fn sync_file(
             p.display()
         )))
     }
+}
+
+/// A registry index: numbers are unique, and each row matches the schema file beside it.
+fn check_index(p: &Path, text: &str) -> Vec<String> {
+    let name = p.display().to_string();
+    let dir = p.parent().unwrap_or(Path::new("."));
+    let mut errs = Vec::new();
+    let mut numbers = std::collections::HashSet::new();
+    let mut provs = std::collections::HashSet::new();
+    for e in crate::schemas::parse_index(text) {
+        if let Some(n) = &e.number {
+            if lin::id_kind(n) != Some(lin::IdKind::Registered) {
+                errs.push(format!("{name}: {n} is not a valid registered number"));
+            }
+            if !numbers.insert(n.clone()) {
+                errs.push(format!("{name}: number {n} is registered twice"));
+            }
+        }
+        if !provs.insert(e.provisional.clone()) {
+            errs.push(format!("{name}: schema {} is listed twice", e.provisional));
+        }
+        let f = dir.join(format!("{}.json", e.provisional));
+        match fs::read_to_string(&f)
+            .ok()
+            .and_then(|t| json::parse(&t).ok())
+        {
+            Some(v) => {
+                if lin::schema_sha256(&v) != e.sha256 {
+                    errs.push(format!(
+                        "{name}: the SHA-256 recorded for {} is not that of {}",
+                        e.provisional,
+                        f.display()
+                    ));
+                }
+            }
+            None => errs.push(format!(
+                "{name}: {} is listed but {} is missing",
+                e.provisional,
+                f.display()
+            )),
+        }
+    }
+    errs
 }

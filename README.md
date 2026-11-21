@@ -39,8 +39,8 @@ plugins
 | Path | What it is |
 | --- | --- |
 | [`spec/lin-1.md`](spec/lin-1.md) | The specification, with the token-cost reasoning (Appendix A) and the benchmark (Appendix B) |
-| [`spec/registry.md`](spec/registry.md) | How schemas are found by their content address |
-| [`schemas/`](schemas/) | The default public schema registry: the LIN meta-schema and other published schemas, named by hash |
+| [`spec/registry.md`](spec/registry.md) | Schema ids (registered numbers and provisional ids) and how schemas are found |
+| [`schemas/`](schemas/) | The official schema registry: the LIN meta-schema and other published schemas, with the index of registered numbers |
 | [`registries.lin`](registries.lin) | The list of public schema registries (initially only `schemas/` above) |
 | [`rust/`](rust/) | The Rust library (`lin-notation`), the `lin` command-line tool, and the WebAssembly build for web pages |
 | [`typescript/`](typescript/) | The TypeScript library (`lean-indented-notation` on npm) |
@@ -71,12 +71,12 @@ lin get data.lin spell-check.summary # one value by id or path
 lin grep -i spell .                  # search keys and values in every .lin and .json file
 lin query '.plugins[].id' data.lin   # jq filters (alias: lin jq)
 lin set data.lin plugins.0.enabled false
-lin check .                          # syntax, schemas, hashes, .lin/.json siblings
+lin check .                          # syntax, schemas, ids, .lin/.json siblings
 ```
 
 See [docs/cli.md](docs/cli.md) for the rest: `to-json`, `from-json`, `fmt`, `head`, `index`,
 `flat`/`unflat`, `del`, `patch`, `merge`, `diff`, `validate`, `sync`, `schema
-infer|get|publish|index|where`, `to-csv`/`from-csv`, `hash` and `tokens`.
+infer|get|publish|register|upgrade|where`, `to-csv`/`from-csv`, `hash` and `tokens`.
 
 ## Libraries
 

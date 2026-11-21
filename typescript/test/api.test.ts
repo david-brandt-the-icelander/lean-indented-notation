@@ -34,11 +34,16 @@ test("errors carry line numbers", () => {
 
 test("a schema'd file needs its schema", () => {
   const schema = { type: "object", properties: { v: { type: "string" } } };
-  const h = lin.schemaHash(schema);
-  const text = lin.stringify({ v: "1.0" }, { schema, schemaHash: h });
+  const h = lin.schemaId(schema);
+  assert.equal(h.length, 39);
+  const text = lin.stringify({ v: "1.0" }, { schema, schemaId: h });
   assert.equal(text, `LIN 1 ${h}\nv 1.0\n`);
   assert.throws(() => lin.parse(text), lin.SchemaRequiredError);
   assert.deepEqual(lin.parse(text, { schema }), { v: "1.0" });
   assert.deepEqual(lin.parse(text, { ignoreSchema: true }), { v: 1 });
-  assert.throws(() => lin.parse(text, { schema: { type: "object" } }), /hash mismatch/);
+  assert.throws(() => lin.parse(text, { schema: { type: "object" } }), /schema mismatch/);
+  const reg = "LIN 1 7\nv 1.0\n";
+  assert.deepEqual(lin.parse(reg, { schema }), { v: "1.0" });
+  assert.throws(() => lin.parse(reg, { schema, sha256: "0".repeat(64) }), /schema mismatch/);
+  assert.deepEqual(lin.parse(reg, { schema, sha256: lin.schemaSha256(schema) }), { v: "1.0" });
 });
