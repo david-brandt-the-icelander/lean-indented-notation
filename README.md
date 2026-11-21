@@ -54,6 +54,10 @@ Every `.lin` file in this repository has a `.json` file beside it holding the sa
 who know JSON can see what the LIN says. The two are kept in step by `lin sync`, and CI fails if they
 are not (see [AGENTS.md](AGENTS.md)).
 
+CI and releases run in a Docker container defined in
+[continuous_integration_and_delivery/lean-indented-notation](https://github.com/david-brandt-the-icelander/continuous_integration_and_delivery/tree/main/lean-indented-notation):
+it watches this repository, checks every commit on `main` and releases every `v*` tag.
+
 ## The `lin` tool
 
 ```bash

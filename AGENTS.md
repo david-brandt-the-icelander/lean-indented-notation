@@ -15,7 +15,8 @@ canonical layout.**
 - If you edited the `.json` file instead, run `lin sync --prefer json <file.lin>` to carry the change
   back into the `.lin` file.
 - A new `.lin` file needs its `.json`: `lin sync` creates it.
-- Before committing, run `lin sync --check .` and `lin check .`. Both must pass; CI runs them, and the
+- Before committing, run `lin sync --check .` and `lin check .`. Both must pass; CI (a Docker container in the
+  continuous_integration_and_delivery repository) runs them, and the
   pre-commit hook in `.githooks/` runs them if you enable it (`git config core.hooksPath .githooks`).
 - Files that must not have a twin (invalid test cases) are listed in `.linignore`.
 
