@@ -1,7 +1,7 @@
 # LIN for Python
 
 `pip install lean-indented-notation` (or `pip install ./python` from this repository). Standard
-library only; Python 3.9+.
+library only; Python 3.10+.
 
 ```python
 import lin
