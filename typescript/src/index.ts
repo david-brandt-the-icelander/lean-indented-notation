@@ -83,4 +83,4 @@ export function fromJson(text: string): any {
   return toJs(parseJson(text));
 }
 
-export const VERSION = "1.0.0";
+export const VERSION = "1.1.0";

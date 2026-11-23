@@ -1,6 +1,6 @@
 // Character rules and JSON text, shared by the reader and writer.
 
-import { LinError, Node, canonicalNumber, isJsonNumber } from "./node.js";
+import { LinError, Node, numberText, isJsonNumber } from "./node.js";
 
 /** Whitespace as Python's str.isspace() defines it; every implementation uses this set. */
 export function isWs(c: string): boolean {
@@ -269,7 +269,7 @@ export function parseJson(text: string): Node {
       const num = text.slice(i, j);
       if (!isJsonNumber(num)) fail(`not a JSON number: ${num}`);
       i = j;
-      return { t: "num", v: canonicalNumber(num) };
+      return { t: "num", v: numberText(num) };
     }
     return fail(i >= text.length ? "unexpected end of input" : "unexpected character");
   };

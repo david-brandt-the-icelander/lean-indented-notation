@@ -1,7 +1,7 @@
 // The LIN reader.
 
 import { idKind } from "./jcs.js";
-import { LinError, Node, canonicalNumber, isIntegerText, isJsonNumber } from "./node.js";
+import { LinError, Node, numberText, isIntegerText, isJsonNumber } from "./node.js";
 import { Pos, Typer, bareReadsAsString } from "./schema.js";
 import { badChar, bareKeyOk, decodeString, keyLenAt, segOk, segStop } from "./text.js";
 
@@ -326,7 +326,7 @@ export function resolve(parsed: Parsed, schema?: unknown): Node {
     if (n.t !== "bare") return n;
     if (bareReadsAsString(n.v, typer.types(pos))) return { t: "str", v: n.v };
     if (n.v === "true" || n.v === "false") return { t: "bool", v: n.v === "true" };
-    return { t: "num", v: canonicalNumber(n.v) };
+    return { t: "num", v: numberText(n.v) };
   };
   const plain = (n: Node, pos: Pos): Node => {
     if (n.t === "arr") return { t: "arr", v: n.v.map((x, i) => plain(x, typer.item(pos, i))) };

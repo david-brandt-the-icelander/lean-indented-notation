@@ -19,32 +19,19 @@ pub enum Value {
     Object(Map),
 }
 
-/// A number, kept as its canonical text: integers with all their digits, other numbers in the
-/// shortest form JSON produces (ECMAScript `Number::toString`). `1.0` and `1` are the same number.
+/// A number, kept as the text JSON gave it: every digit, the same spelling (`1.0` stays `1.0`,
+/// `1e2` stays `1e2`), whatever its magnitude, so JSON read into LIN and written back as JSON
+/// has the same numbers byte for byte. Two numbers are equal when their text is.
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Number(String);
 
 impl Number {
-    /// Parse JSON number syntax (`-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?`).
+    /// Parse JSON number syntax (`-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?`), keeping the text.
     pub fn from_json_text(text: &str) -> Result<Number, Error> {
         if !is_json_number(text) {
             return Err(Error::new(format!("not a JSON number: {text}")));
         }
-        Number::canonical(text)
-    }
-
-    fn canonical(text: &str) -> Result<Number, Error> {
-        if text.bytes().all(|b| b.is_ascii_digit() || b == b'-') {
-            let digits = text.trim_start_matches('-');
-            if digits.bytes().all(|b| b == b'0') {
-                return Ok(Number("0".into()));
-            }
-            return Ok(Number(text.to_string()));
-        }
-        let f: f64 = text
-            .parse()
-            .map_err(|_| Error::new(format!("bad number: {text}")))?;
-        Number::from_f64(f).ok_or_else(|| Error::new(format!("number out of range: {text}")))
+        Ok(Number(text.to_string()))
     }
 
     /// A finite float in shortest ECMAScript form; `None` for NaN and infinities.
@@ -67,12 +54,12 @@ impl Number {
         Number(i.to_string())
     }
 
-    /// The canonical text, as LIN and the reference JSON writers print it.
+    /// The number's text, as LIN and the reference JSON writers print it.
     pub fn as_str(&self) -> &str {
         &self.0
     }
 
-    /// True when the canonical text is an integer (`-?[0-9]+`).
+    /// True when the text is an integer (`-?[0-9]+`).
     pub fn is_integer_text(&self) -> bool {
         let t = self.0.strip_prefix('-').unwrap_or(&self.0);
         !t.is_empty() && t.bytes().all(|b| b.is_ascii_digit())

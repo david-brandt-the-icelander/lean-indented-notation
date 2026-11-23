@@ -13,7 +13,7 @@ from .jsonio import from_json, to_json
 __all__ = ['VERSION', 'LinError', 'SchemaRequired', 'loads', 'dumps', 'dumps_fragment', 'parse', 'resolve',
            'read_header_of', 'num', 'canonicalize', 'schema_id', 'schema_sha256', 'schema_id_kind', 'from_json', 'to_json',
            'lin_to_json', 'json_to_lin', 'DEFAULT_SPLIT_LIMIT', 'DEFAULT_OBJECT_LIMIT']
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 
 
 def lin_to_json(text, schema=None, *, ignore_schema=False, indent=2):

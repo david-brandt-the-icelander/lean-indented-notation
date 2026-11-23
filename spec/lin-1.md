@@ -143,7 +143,7 @@ A scalar's type comes from the schema named in the header, never from how the va
 | a union, such as `string` or `number` | JSON number or boolean syntax | the number or boolean; a string that looks like one MUST be quoted |
 
 - **Files without a schema** use the same rule as a union of all types: bare `true`, `false` and JSON numbers are read as those types, and writers MUST quote strings that look like them.
-- **Numbers** are written in the shortest form JSON produces for them, which is the form ECMAScript's number-to-string conversion gives and RFC 8785 uses: `1.10` is written `1.1`, `6.0` is written `6`, and `1e-05` is written `0.00001`. Integers keep all their digits. A value whose exact digits matter belongs in a string.
+- **Numbers** keep the text JSON gave them: every digit and the same spelling, whatever the magnitude. `1.10` is written `1.10`, `6.0` is written `6.0`, `1E400` is written `1E400`, and `1.00000000000000000001` keeps all its digits. Readers MUST NOT round a number or change its spelling, so JSON read into LIN and written back as JSON has the same numbers, byte for byte. Two numbers are the same value when their text is. Schema ids (section 7) still serialize numbers as RFC 8785 requires.
 
 **Schemas**
 
@@ -415,7 +415,6 @@ Each rule in LIN was chosen by counting the tokens of the alternatives. Tokenize
 | Small object, nested | `     "size": {"w": 640, "h": 480}, ` | 16 | `  size{} w 640\|h 480 ` | 10 | One field per line costs 12, because each line at depth 2 or more pays a token for its indentation. Inline objects save 1.1% on the sample. |
 | Table separator | `,` or tab | 1 | `\|` | 1 | A comma or tab often merges with a short word after it (`,b` is one token), which would save 0.8% on the sample. `\|` is kept because commas are common in text, so many cells would need quotes, and tabs are invisible and often changed by editors and edit tools. |
 | Null | `"summary": null,` | 6 | `summary ~` | 4 | `~` is one token, and no quotes or comma. |
-| Number with a zero fraction | `     "width": 6.0, ` | 9 | `  width 6 ` | 4 | 6.0 and 6 are the same JSON number, and LIN writes the shortest form, as RFC 8785 does. This saves 0.8% on the sample, nearly all in one file of measurements. |
 | Multi-line text | `"Off by default.\nTurn it on…"` | 16 | `notes \|` and indented lines | 15 | `\n` costs 2 tokens as an escape; a real line end often merges with the punctuation before it (`.` + line end is one token). |
 | Non-ASCII text | `"été"` (escaped) | 11 | `été` | 1 | Writing characters as themselves avoids escapes, which tokenize as several tokens each. |
 | List item markers | `"text",` | 5 | `- text` / `+ id …` | 5 | One item per line costs 3 tokens an item (indent, marker, line end), so short items go inline as key\[\] a\|b\|c, at 1 token an item, as in minified JSON. Long items keep their own lines, so a diff shows which one changed. |
@@ -474,7 +473,7 @@ The files were downloaded for measurement only and are not redistributed; the li
 | Over 10,000 tokens | 11 | 69.3% | 56.6% |
 
 - LIN is smaller than minified JSON in 110 of the 124 files (median: 91% of minified). It gains most on large files, which are mostly lists of same-shaped records that become tables.
-- Root-level tables and inline lists came from this sample. Before them, plain LIN cost 77.5% on most of these files, more than minified JSON, because two large files are root-level lists. One-space indentation took it from 61.8% to 60.2%, and inline objects, looser bare keys and numbers in their shortest form took it to 58.9%.
+- Root-level tables and inline lists came from this sample. Before them, plain LIN cost 77.5% on most of these files, more than minified JSON, because two large files are root-level lists. One-space indentation took it from 61.8% to 60.2%, and inline objects, looser bare keys and numbers in their shortest form took it to 58.9%. Numbers have since kept their JSON text, which gives back the part of that saving that came from shortening them (0.8% on the sample).
 - Encoding each value in base64 cost 2.5 times its plain text.
 - The sample is small and depends on what GitHub search returns. Formats rich in prose would split better; numeric data gains least from LIN.
 
