@@ -21,7 +21,7 @@ CASES = {
     'empty-object': '{}',
     'empty-array': '[]',
     'scalars': '{"s": "text", "i": 42, "neg": -7, "f": 1.5, "t": true, "f2": false, "n": null}',
-    'numbers': '{"a": 1.0, "b": 1.10, "c": 1e-05, "d": 1e-7, "e": 1e21, "f": 1.5e300, "g": -0, "h": -0.0, "i": 123456789012345678901234567890, "j": 0.1, "k": 100.0, "l": 2.5E3, "m": 5e-324}',
+    'numbers': '{"a": 1.0, "b": 1.10, "c": 1e-05, "d": 1e-7, "e": 1e21, "f": 1.5e300, "g": -0, "h": -0.0, "i": 123456789012345678901234567890, "j": 0.1, "k": 100.0, "l": 2.5E3, "m": 5e-324, "n": 1.00000000000000000001, "o": 1E400, "p": 0.10, "q": -1.5e-400}',
     'number-like-strings': '{"a": "1", "b": "1.0", "c": "-2", "d": "true", "e": "false", "f": "1e5", "g": "01", "h": "1.", "i": "+1", "j": ".5", "k": "null", "l": "True"}',
     'strings-that-need-quotes': '{"empty": "", "lead": " x", "trail": "x ", "quote": "\\"q", "at": "@x", "tilde": "~", "list": "[]", "obj": "{}", "bar": "|", "tab": "a\\tb", "cr": "a\\rb", "del": "a\\u007fb", "nel": "a\\u0085b", "ls": "a\\u2028b", "ps": "a\\u2029b", "nul": "a\\u0000b"}',
     'strings-that-stay-bare': '{"colon": "a: b", "hash": "# not a comment", "dash": "- x", "plus": "+ y", "inner": "say \\"hi\\"", "pipe": "a|b", "unicode": "été 日本語 🙂", "url": "https://example.com/a?b=c#d", "at-inside": "a@b", "tilde-inside": "~x", "brackets": "[x]"}',
@@ -48,7 +48,8 @@ CASES = {
 READ = {
     'blank-lines': ('LIN 1\na 1\n\nb\n\n c 2\n', {'a': 1, 'b': {'c': 2}}),
     'quoted-anyway': ('LIN 1\n"a" "x"\nb "1"\nc[] "p"|q\n', {'a': 'x', 'b': '1', 'c': ['p', 'q']}),
-    'number-forms': ('LIN 1\na 1.0\nb 1E2\nc -0\nd 0.50\n', {'a': 1, 'b': 100, 'c': 0, 'd': 0.5}),
+    'number-forms': ('LIN 1\na 1.0\nb 1E2\nc -0\nd 0.50\ne 12345678901234567890.000000000000000001\n',
+                     lin.from_json('{"a": 1.0, "b": 1E2, "c": -0, "d": 0.50, "e": 12345678901234567890.000000000000000001}')),
     'explicit-ref-name': ('LIN 1\na @a\nb @other\n---\n@a one\n@other two\n', {'a': 'one', 'b': 'two'}),
     'data-out-of-order': ('LIN 1\na @\nb @\n---\n@b two\n@a one\n', {'a': 'one', 'b': 'two'}),
     'data-block-and-list': ('LIN 1\na @\nb @\n---\n@a |\n x\n  y\n@b\n - p\n - q\n', {'a': 'x\n y', 'b': ['p', 'q']}),

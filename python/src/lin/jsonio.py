@@ -1,7 +1,7 @@
-"""Strict JSON in, canonical JSON out, so every LIN implementation writes the same JSON text."""
+"""Strict JSON in, the same JSON out: every LIN implementation writes the same JSON text, and numbers keep the text they were read with."""
 import json
 
-from .core import LinError, is_number, json_string, num
+from .core import JsonFloat, JsonInt, LinError, is_number, json_string, num
 
 
 def _pairs(pairs):
@@ -18,15 +18,16 @@ def _no_constant(name):
 
 
 def from_json(text):
-    """Parse JSON strictly: duplicate keys and NaN/Infinity are errors."""
+    """Parse JSON strictly: duplicate keys and NaN/Infinity are errors; numbers keep their text."""
     try:
-        return json.loads(text, object_pairs_hook=_pairs, parse_constant=_no_constant)
+        return json.loads(text, object_pairs_hook=_pairs, parse_constant=_no_constant,
+                          parse_int=JsonInt, parse_float=JsonFloat)
     except json.JSONDecodeError as e:
         raise LinError(f'bad JSON: {e.msg} at line {e.lineno} column {e.colno}') from None
 
 
 def to_json(v, indent=2):
-    """JSON text with numbers in shortest form. indent=None gives compact JSON on one line;
+    """JSON text, each number as it was read (others in shortest form). indent=None gives compact JSON on one line;
     otherwise the layout of json.dumps(indent=2) and JSON.stringify(v, null, 2), plus a final newline."""
     if indent is None:
         return _compact(v)

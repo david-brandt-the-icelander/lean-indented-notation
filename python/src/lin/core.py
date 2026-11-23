@@ -60,11 +60,35 @@ def json_string(s):
     return json.dumps(s, ensure_ascii=False)
 
 
+class JsonInt(int):
+    """An integer read from JSON or LIN that keeps its text, so it is written back as it was
+    (`-0` stays `-0`)."""
+
+    def __new__(cls, text):
+        o = super().__new__(cls, int(text))
+        o.text = text
+        return o
+
+
+class JsonFloat(float):
+    """A number with a fraction or exponent read from JSON or LIN. It keeps its text, so it is
+    written back exactly as it was (`1.0` stays `1.0`, `1E400` stays `1E400`), with every digit,
+    whatever float arithmetic would make of it."""
+
+    def __new__(cls, text):
+        o = super().__new__(cls, float(text))
+        o.text = text
+        return o
+
+
 def num(x):
-    """A number in the shortest form JSON produces: integers exactly, floats as
-    ECMAScript Number::toString (1.0 -> 1, 1e-05 -> 0.00001, 1e21 -> 1e+21)."""
+    """A number's JSON text: a number read from JSON or LIN as it was written; any other
+    integer exactly, any other float as ECMAScript Number::toString (1e-05 -> 0.00001, 1e21 -> 1e+21)."""
     if isinstance(x, bool):
         raise TypeError('bool is not a number')
+    text = getattr(x, 'text', None)
+    if text is not None:
+        return text
     if isinstance(x, int):
         return str(x)
     if not math.isfinite(x):
@@ -95,13 +119,10 @@ def num(x):
 
 
 def parse_number(text):
-    """JSON number text to int or float; floats must be finite."""
+    """JSON number text to a JsonInt or JsonFloat that keeps the text, whatever its magnitude."""
     if re.fullmatch(r'-?\d+', text):
-        return int(text)
-    v = float(text)
-    if not math.isfinite(v):
-        raise LinError(f'number out of range: {text}')
-    return v
+        return JsonInt(text)
+    return JsonFloat(text)
 
 
 def is_number(v):
@@ -600,7 +621,7 @@ def check_value(v, depth=0):
     elif isinstance(v, list):
         for x in v:
             check_value(x, depth + 1)
-    elif isinstance(v, float) and not math.isfinite(v):
+    elif isinstance(v, float) and not math.isfinite(v) and getattr(v, 'text', None) is None:
         raise ValueError('LIN numbers must be finite')
     elif not (v is None or isinstance(v, (str, bool, int, float))):
         raise TypeError(f'not a JSON value: {type(v).__name__}')

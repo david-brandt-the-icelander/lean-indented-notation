@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lean-indented-notation"
-version = "1.0.0"
+version = "1.1.0"
 description = "LIN (Lean Indented Notation): JSON's data model in fewer tokens, for AI agents"
 readme = "README.md"
 license = "MIT"

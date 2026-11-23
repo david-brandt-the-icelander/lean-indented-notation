@@ -662,7 +662,7 @@ checksum = "b6d2cec3eae94f9f509c767b45932f1ada8350c4bdb85af2fcab4a3c14807981"
 
 [[package]]
 name = "lin-cli"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "clap",
  "globset",
@@ -679,7 +679,7 @@ dependencies = [
 
 [[package]]
 name = "lin-notation"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "indexmap",
  "regex-lite",
@@ -690,7 +690,7 @@ dependencies = [
 
 [[package]]
 name = "lin-wasm"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "lin-notation",
  "wasm-bindgen",

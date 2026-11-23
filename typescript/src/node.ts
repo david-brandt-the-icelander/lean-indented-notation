@@ -4,7 +4,7 @@
 export type Node =
   | { t: "null" }
   | { t: "bool"; v: boolean }
-  | { t: "num"; v: string } // canonical number text
+  | { t: "num"; v: string } // the number's JSON text, kept as it is
   | { t: "str"; v: string; bareOk?: boolean } // bareOk: may go bare although it looks like a number
   | { t: "arr"; v: Node[] }
   | { t: "obj"; v: [string, Node][] }
@@ -34,15 +34,11 @@ export function isJsonNumber(s: string): boolean {
   return NUM_RE.test(s);
 }
 
-/** Canonical text of a JSON number: integers keep their digits, other numbers take the
- * shortest form JSON produces (ECMAScript Number::toString). */
-export function canonicalNumber(text: string): string {
-  if (/^-?[0-9]+$/.test(text)) {
-    return /^-?0+$/.test(text) ? "0" : text;
-  }
-  const f = Number(text);
-  if (!Number.isFinite(f)) throw new LinError(`number out of range: ${text}`);
-  return f === 0 ? "0" : String(f);
+/** A JSON number's text, kept as it is: every digit and the same spelling (`1.0` stays `1.0`),
+ * whatever its magnitude, so JSON read into LIN and written back has the same numbers. */
+export function numberText(text: string): string {
+  if (!isJsonNumber(text)) throw new LinError(`not a JSON number: ${text}`);
+  return text;
 }
 
 export function isIntegerText(s: string): boolean {
@@ -76,7 +72,7 @@ export function fromJs(v: unknown): Node {
     if (!Number.isFinite(v)) throw new LinError("LIN numbers must be finite");
     return { t: "num", v: v === 0 ? "0" : String(v) };
   }
-  if (typeof v === "bigint") return { t: "num", v: canonicalNumber(v.toString()) };
+  if (typeof v === "bigint") return { t: "num", v: numberText(v.toString()) };
   if (typeof v === "string") return { t: "str", v };
   if (Array.isArray(v)) return { t: "arr", v: v.map(fromJs) };
   if (typeof v === "object") {

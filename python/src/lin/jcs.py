@@ -6,7 +6,7 @@ from .core import is_number, json_string, num
 
 def _num(x):
     # RFC 8785 serializes every number as the IEEE double it denotes, in ECMAScript form.
-    return num(float(x)) if isinstance(x, int) else num(x)
+    return num(float(x))
 
 
 def canonicalize(v):
